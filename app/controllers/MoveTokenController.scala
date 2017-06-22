@@ -20,6 +20,7 @@ class MoveTokenController @Inject() (@Named("movetoken-actor") moveTokenActor: A
     (moveTokenActor ? moveToken).mapTo[MoveTokenResults].map { message =>
       message match {
         case gme: GameDoesNotExist => Ok("game does not exist")
+        case PlayerWon(playerId) => Ok(s"player won ${playerId}")
         case playerNotExist: PlayerDoesNotExist => Ok("player does not exist")
         case Updated(id) => Ok(id)
         case nu: NotUpdated => Ok("not updated")

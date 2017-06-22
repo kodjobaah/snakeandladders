@@ -45,7 +45,16 @@ class MoveTokenActor @Inject() (gameStateDao: GameStateDao) extends Actor {
                 updatePlayer(gameState.player.copy(tokenLocation = 1))
               } else {
                 val newLocation = gameState.player.dice + gameState.player.tokenLocation
-                updatePlayer(gameState.player.copy(tokenLocation = newLocation))
+                if (newLocation < 100) {
+                  updatePlayer(gameState.player.copy(tokenLocation = newLocation))
+                } else if (newLocation == 100) {
+                  val newGameState = gameState.copy(player = gameState.player.copy(tokenLocation = newLocation), state = false)
+                  gameStateDao.update(newGameState).map { value =>
+                    PlayerWon(gameState.player.identifier)
+                  }
+                } else {
+                  Future(NotUpdated())
+                }
               }
             } else {
               Future(PlayerDoesNotExist())
