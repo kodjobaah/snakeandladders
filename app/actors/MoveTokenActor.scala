@@ -25,6 +25,8 @@ class MoveTokenActor @Inject() (gameStateDao: GameStateDao) extends Actor {
 
   import scala.concurrent.ExecutionContext.Implicits.global
 
+  val snakes = Map(12 -> 2)
+
   override def receive: Receive = {
 
     case MoveToken(streamId, playerId) =>
@@ -46,7 +48,15 @@ class MoveTokenActor @Inject() (gameStateDao: GameStateDao) extends Actor {
               } else {
                 val newLocation = gameState.player.dice + gameState.player.tokenLocation
                 if (newLocation < 100) {
-                  updatePlayer(gameState.player.copy(tokenLocation = newLocation, dice = 0))
+
+                  val newPosition = snakes.get(newLocation)
+
+                  if (newPosition.isDefined) {
+                    updatePlayer(gameState.player.copy(tokenLocation = newPosition.get, dice = 0))
+                  } else {
+                    updatePlayer(gameState.player.copy(tokenLocation = newLocation, dice = 0))
+                  }
+
                 } else if (newLocation == 100) {
                   val newGameState = gameState.copy(player = gameState.player.copy(tokenLocation = newLocation, dice = 0), state = false)
                   gameStateDao.update(newGameState).map { value =>

@@ -151,6 +151,49 @@ class MoveTokenActorSpec extends TestKit(ActorSystem("MyTest")) with MockFactory
       expectMsg(NotUpdated())
 
     }
+
+    "cause token to come down if token location is 12 and there is a snake from 2 to 12" in {
+
+      val gameState = mock[GameStateDao]
+
+      val p1 = Player(identifier = "player1", dice = 2, tokenLocation = 10)
+      val gs = GameState(player = p1, state = true)
+
+      (gameState.find _).expects(*).returning(Future(Option(gs)))
+
+      (gameState.update _).expects(where {
+        (gameState: GameState) => gameState.player.tokenLocation == 2
+      }).returning(Future(gs._id.stringify))
+
+      val moveTokenActor = system.actorOf(Props(classOf[MoveTokenActor], gameState))
+      implicit val timeout: Timeout = 5.seconds
+
+      moveTokenActor ! MoveToken(gs._id.stringify, gs.player.identifier)
+      expectMsg(Updated(gs._id.stringify))
+
+
+    }
+
+    "cause token not to come down if token is on 2 if there is a snake from 2 to 12" in {
+
+      val gameState = mock[GameStateDao]
+
+      val p1 = Player(identifier = "player1", dice = 1, tokenLocation = 1)
+      val gs = GameState(player = p1, state = true)
+
+      (gameState.find _).expects(*).returning(Future(Option(gs)))
+
+      (gameState.update _).expects(where {
+        (gameState: GameState) => gameState.player.tokenLocation == 2
+      }).returning(Future(gs._id.stringify))
+
+      val moveTokenActor = system.actorOf(Props(classOf[MoveTokenActor], gameState))
+      implicit val timeout: Timeout = 5.seconds
+
+      moveTokenActor ! MoveToken(gs._id.stringify, gs.player.identifier)
+      expectMsg(Updated(gs._id.stringify))
+
+    }
   }
 
 }
