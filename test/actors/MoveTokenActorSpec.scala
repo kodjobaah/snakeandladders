@@ -171,10 +171,9 @@ class MoveTokenActorSpec extends TestKit(ActorSystem("MyTest")) with MockFactory
       moveTokenActor ! MoveToken(gs._id.stringify, gs.player.identifier)
       expectMsg(Updated(gs._id.stringify))
 
-
     }
 
-    "cause token not to come down if token is on 2 if there is a snake from 2 to 12" in {
+    "cause token to move up if on 2 and there is a laddder from 2 to 12" in {
 
       val gameState = mock[GameStateDao]
 
@@ -184,7 +183,7 @@ class MoveTokenActorSpec extends TestKit(ActorSystem("MyTest")) with MockFactory
       (gameState.find _).expects(*).returning(Future(Option(gs)))
 
       (gameState.update _).expects(where {
-        (gameState: GameState) => gameState.player.tokenLocation == 2
+        (gameState: GameState) => gameState.player.tokenLocation == 12
       }).returning(Future(gs._id.stringify))
 
       val moveTokenActor = system.actorOf(Props(classOf[MoveTokenActor], gameState))
