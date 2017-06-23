@@ -1,12 +1,12 @@
 package actors
 
 import actors.GameStateActor.Start
-import akka.actor.{ActorSystem, Props}
-import akka.testkit.{ImplicitSender, TestKit}
+import akka.actor.{ ActorSystem, Props }
+import akka.testkit.{ ImplicitSender, TestKit }
 import akka.util.Timeout
-import models.{GameState, GameStateDao, Player}
+import models.{ GameState, GameStateDao, Player }
 import org.scalamock.scalatest.MockFactory
-import org.scalatest.{BeforeAndAfterAll, Matchers, WordSpecLike}
+import org.scalatest.{ BeforeAndAfterAll, Matchers, WordSpecLike }
 import service.PlaysFirstService
 
 import scala.concurrent.Future
@@ -24,7 +24,6 @@ class GameStateActorSpec extends TestKit(ActorSystem("MyTest")) with MockFactory
   "GameStateActor" must {
 
     "return the id of the game state if it exists" in {
-
 
       val p1 = Player("player1")
 
@@ -47,11 +46,10 @@ class GameStateActorSpec extends TestKit(ActorSystem("MyTest")) with MockFactory
 
       val gameState = mock[GameStateDao]
 
-
       val p1 = Player("player1")
 
       val playsFirstService = mock[PlaysFirstService]
-      
+
       val p2 = Player("player2")
       val players = List(p1, p2)
       val gs = GameState(player = players, state = true)

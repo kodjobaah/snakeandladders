@@ -28,7 +28,6 @@ class RollDiceActorSpec extends TestKit(ActorSystem("MyTest")) with MockFactory 
 
       val gameState = mock[GameStateDao]
 
-
       val p1 = Player("player1", dice = 0, roll = true)
       val p2 = Player("player2")
       val players = List(p1, p2)
@@ -38,11 +37,12 @@ class RollDiceActorSpec extends TestKit(ActorSystem("MyTest")) with MockFactory 
 
       var diceRoll = 0
       (gameState.update _).expects(where {
-        (gameState: GameState) => {
-          val player = gameState.player.find(p => p.identifier == p1.identifier).get
-           diceRoll = player.dice
-          player.dice >=1 && player.dice <= 6
-        }
+        (gameState: GameState) =>
+          {
+            val player = gameState.player.find(p => p.identifier == p1.identifier).get
+            diceRoll = player.dice
+            player.dice >= 1 && player.dice <= 6
+          }
       }).returning(Future(gs._id.stringify))
 
       val rollDiceActor = system.actorOf(Props(classOf[DiceRollActor], gameState))

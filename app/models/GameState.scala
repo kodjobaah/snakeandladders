@@ -11,7 +11,7 @@ case class GameState(
   state: Boolean
 )
 
-case class Player(identifier: String, dice: Int = 0, tokenLocation: Int = -1, roll: Boolean = false)
+case class Player(identifier: String, dice: Int = -1, tokenLocation: Int = -1, roll: Boolean = false)
 
 object JsonFormats {
 

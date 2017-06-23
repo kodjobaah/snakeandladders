@@ -26,7 +26,6 @@ class MoveTokenActorSpec extends TestKit(ActorSystem("MyTest")) with MockFactory
 
       val gameState = mock[GameStateDao]
 
-
       val p1 = Player("player1", roll = true)
       val p2 = Player("player2")
       val players = List(p1, p2)
@@ -36,7 +35,10 @@ class MoveTokenActorSpec extends TestKit(ActorSystem("MyTest")) with MockFactory
 
       (gameState.update _).expects(where {
         (gameState: GameState) =>
-          gameState.player.find(p => p.identifier == p1.identifier).get.tokenLocation == 1
+          val p_1 = gameState.player.find(p => p.identifier == p1.identifier).get
+          val p_2 = gameState.player.find(p => p.identifier != p1.identifier).get
+
+          p_1.tokenLocation == 1 && p_1.roll == false && p_2.roll == true
       }).returning(Future(gs._id.stringify))
 
       val moveTokenActor = system.actorOf(Props(classOf[MoveTokenActor], gameState))
@@ -51,7 +53,7 @@ class MoveTokenActorSpec extends TestKit(ActorSystem("MyTest")) with MockFactory
 
       val gameState = mock[GameStateDao]
 
-      val p1 = Player("player1", dice = 3, tokenLocation = 1,  roll = true)
+      val p1 = Player("player1", dice = 3, tokenLocation = 1, roll = true)
       val p2 = Player("player2")
       val players = List(p1, p2)
       val gs = GameState(player = players, state = true)
@@ -60,7 +62,9 @@ class MoveTokenActorSpec extends TestKit(ActorSystem("MyTest")) with MockFactory
 
       (gameState.update _).expects(where {
         (gameState: GameState) =>
-          gameState.player.find(p => p.identifier == p1.identifier).get.tokenLocation == 4
+          val p_1 = gameState.player.find(p => p.identifier == p1.identifier).get
+          val p_2 = gameState.player.find(p => p.identifier != p1.identifier).get
+          p_1.roll == false && p_1.tokenLocation == 4 && p_2.roll == true
       }).returning(Future(gs._id.stringify))
 
       val moveTokenActor = system.actorOf(Props(classOf[MoveTokenActor], gameState))
@@ -75,7 +79,7 @@ class MoveTokenActorSpec extends TestKit(ActorSystem("MyTest")) with MockFactory
 
       val gameState = mock[GameStateDao]
 
-      val p1 = Player("player1", dice = 4, tokenLocation = 4,  roll = true)
+      val p1 = Player("player1", dice = 4, tokenLocation = 4, roll = true)
       val p2 = Player("player2")
       val players = List(p1, p2)
       val gs = GameState(player = players, state = true)
@@ -84,7 +88,10 @@ class MoveTokenActorSpec extends TestKit(ActorSystem("MyTest")) with MockFactory
 
       (gameState.update _).expects(where {
         (gameState: GameState) =>
-          gameState.player.find(p => p.identifier == p1.identifier).get.tokenLocation == 8
+
+          val p_1 = gameState.player.find(p => p.identifier == p1.identifier).get
+          val p_2 = gameState.player.find(p => p.identifier != p1.identifier).get
+          p_1.roll == false && p_1.tokenLocation == 8 && p_2.roll == true
       }).returning(Future(gs._id.stringify))
 
       val moveTokenActor = system.actorOf(Props(classOf[MoveTokenActor], gameState))
@@ -112,11 +119,10 @@ class MoveTokenActorSpec extends TestKit(ActorSystem("MyTest")) with MockFactory
 
       val gameState = mock[GameStateDao]
 
-      val p1 = Player("player1", dice = 4, tokenLocation = 4,  roll = true)
+      val p1 = Player("player1", dice = 4, tokenLocation = 4, roll = true)
       val p2 = Player("player2")
       val players = List(p1, p2)
       val gs = GameState(player = players, state = true)
-
 
       (gameState.find _).expects(*).returning(Future(Option(gs)))
 
@@ -132,18 +138,18 @@ class MoveTokenActorSpec extends TestKit(ActorSystem("MyTest")) with MockFactory
 
       val gameState = mock[GameStateDao]
 
-      val p1 = Player("player1", dice = 3, tokenLocation = 97,  roll = true)
+      val p1 = Player("player1", dice = 3, tokenLocation = 97, roll = true)
       val p2 = Player("player2")
       val players = List(p1, p2)
       val gs = GameState(player = players, state = true)
-
 
       (gameState.find _).expects(*).returning(Future(Option(gs)))
 
       (gameState.update _).expects(where {
 
         (gameState: GameState) =>
-          gameState.player.find(p => p.identifier == p1.identifier).get.tokenLocation == 100 && gameState == false
+          val player = gameState.player.find(p => p.identifier == p1.identifier).get
+          player.tokenLocation == 100 && gameState.state == false
       }).returning(Future(gs._id.stringify))
 
       val moveTokenActor = system.actorOf(Props(classOf[MoveTokenActor], gameState))
@@ -158,7 +164,7 @@ class MoveTokenActorSpec extends TestKit(ActorSystem("MyTest")) with MockFactory
 
       val gameState = mock[GameStateDao]
 
-      val p1 = Player("player1", dice = 4, tokenLocation = 97,  roll = true)
+      val p1 = Player("player1", dice = 4, tokenLocation = 97, roll = true)
       val p2 = Player("player2")
       val players = List(p1, p2)
       val gs = GameState(player = players, state = true)
@@ -176,7 +182,7 @@ class MoveTokenActorSpec extends TestKit(ActorSystem("MyTest")) with MockFactory
 
       val gameState = mock[GameStateDao]
 
-      val p1 = Player("player1", dice = 2, tokenLocation = 10,  roll = true)
+      val p1 = Player("player1", dice = 2, tokenLocation = 10, roll = true)
       val p2 = Player("player2")
       val players = List(p1, p2)
       val gs = GameState(player = players, state = true)
@@ -185,7 +191,11 @@ class MoveTokenActorSpec extends TestKit(ActorSystem("MyTest")) with MockFactory
 
       (gameState.update _).expects(where {
         (gameState: GameState) =>
-          gameState.player.find(p => p.identifier == p1.identifier).get.tokenLocation == 2
+
+          val p_1 = gameState.player.find(p => p.identifier == p1.identifier).get
+          val p_2 = gameState.player.find(p => p.identifier != p1.identifier).get
+          p_1.roll == false && p_1.tokenLocation == 2 && p_2.roll == true
+
       }).returning(Future(gs._id.stringify))
 
       val moveTokenActor = system.actorOf(Props(classOf[MoveTokenActor], gameState))
@@ -200,17 +210,19 @@ class MoveTokenActorSpec extends TestKit(ActorSystem("MyTest")) with MockFactory
 
       val gameState = mock[GameStateDao]
 
-      val p1 = Player("player1", dice = 2, tokenLocation = 1,  roll = true)
+      val p1 = Player("player1", dice = 1, tokenLocation = 1, roll = true)
       val p2 = Player("player2")
       val players = List(p1, p2)
       val gs = GameState(player = players, state = true)
-
 
       (gameState.find _).expects(*).returning(Future(Option(gs)))
 
       (gameState.update _).expects(where {
         (gameState: GameState) =>
-          gameState.player.find(p => p.identifier == p1.identifier).get.tokenLocation == 12
+
+          val p_1 = gameState.player.find(p => p.identifier == p1.identifier).get
+          val p_2 = gameState.player.find(p => p.identifier != p1.identifier).get
+          p_1.roll == false && p_1.tokenLocation == 12 && p_2.roll == true
       }).returning(Future(gs._id.stringify))
 
       val moveTokenActor = system.actorOf(Props(classOf[MoveTokenActor], gameState))
