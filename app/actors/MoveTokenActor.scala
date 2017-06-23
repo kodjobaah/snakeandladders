@@ -35,34 +35,44 @@ class MoveTokenActor @Inject() (gameStateDao: GameStateDao) extends Actor {
         gs match {
           case Some(gameState) =>
 
-            val result: Future[MoveTokenActor.MoveTokenResults with Product with Serializable] = if (gameState.player.identifier == playerId) {
+            val result: Future[MoveTokenActor.MoveTokenResults with Product with Serializable] = if (gameState.player.find(p => p.identifier == playerId && p.roll == true).isDefined) {
 
-              def updatePlayer(player: Player): Future[Updated] = {
-                val newGameState = gameState.copy(player = player)
+              val playerOfInterest = gameState.player.find(p => p.identifier == playerId && p.roll == true).get
+              val playerTwo = gameState.player.find(p => p.identifier != playerId).get
+              def updatePlayer(players: List[Player]): Future[Updated] = {
+                val newGameState = gameState.copy(player = players)
                 gameStateDao.update(newGameState).map { value =>
                   Updated(value)
                 }
               }
 
-              if (gameState.player.tokenLocation == -1) {
-                updatePlayer(gameState.player.copy(tokenLocation = 1, dice = 0))
+              if (playerOfInterest.tokenLocation == -1) {
+                val listPlayers = List(playerTwo, playerOfInterest.copy(tokenLocation = 1, dice = 0))
+                updatePlayer(listPlayers)
               } else {
-                val newLocation = gameState.player.dice + gameState.player.tokenLocation
+                val newLocation = playerOfInterest.dice + playerOfInterest.tokenLocation
                 if (newLocation < 100) {
 
                   val newPosition = snakes.get(newLocation)
                   val newLadder = ladders.get(newLocation)
 
                   (newPosition, newLadder) match {
-                    case (None, Some(ladder)) => updatePlayer(gameState.player.copy(tokenLocation = ladder, dice = 0))
-                    case (Some(snake), None) => updatePlayer(gameState.player.copy(tokenLocation = snake, dice = 0))
-                    case _ => updatePlayer(gameState.player.copy(tokenLocation = newLocation, dice = 0))
+                    case (None, Some(ladder)) =>
+                      val listPlayers = List(playerTwo.copy(roll = true), playerOfInterest.copy(tokenLocation = ladder, dice = 0, roll = false))
+                      updatePlayer(listPlayers)
+                    case (Some(snake), None) =>
+                      val listPlayers = List(playerTwo.copy(roll = true), playerOfInterest.copy(tokenLocation = snake, dice = 0, roll = false))
+                      updatePlayer(listPlayers)
+                    case _ =>
+                      val listPlayers = List(playerTwo.copy(roll = true), playerOfInterest.copy(tokenLocation = newLocation, dice = 0, roll = false))
+                      updatePlayer(listPlayers)
                   }
 
                 } else if (newLocation == 100) {
-                  val newGameState = gameState.copy(player = gameState.player.copy(tokenLocation = newLocation, dice = 0), state = false)
+                  val listPlayers = List(playerTwo, playerOfInterest.copy(tokenLocation = newLocation, dice = 0, roll = false))
+                  val newGameState = gameState.copy(player = listPlayers, state = false)
                   gameStateDao.update(newGameState).map { value =>
-                    PlayerWon(gameState.player.identifier)
+                    PlayerWon(playerOfInterest.identifier)
                   }
                 } else {
                   Future(NotUpdated())

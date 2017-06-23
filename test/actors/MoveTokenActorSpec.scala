@@ -26,19 +26,23 @@ class MoveTokenActorSpec extends TestKit(ActorSystem("MyTest")) with MockFactory
 
       val gameState = mock[GameStateDao]
 
-      val p1 = Player("player1")
-      val gs = GameState(player = p1, state = true)
+
+      val p1 = Player("player1", roll = true)
+      val p2 = Player("player2")
+      val players = List(p1, p2)
+      val gs = GameState(player = players, state = true)
 
       (gameState.find _).expects(*).returning(Future(Option(gs)))
 
       (gameState.update _).expects(where {
-        (gameState: GameState) => gameState.player.tokenLocation == 1
+        (gameState: GameState) =>
+          gameState.player.find(p => p.identifier == p1.identifier).get.tokenLocation == 1
       }).returning(Future(gs._id.stringify))
 
       val moveTokenActor = system.actorOf(Props(classOf[MoveTokenActor], gameState))
       implicit val timeout: Timeout = 5.seconds
 
-      moveTokenActor ! MoveToken(gs._id.stringify, gs.player.identifier)
+      moveTokenActor ! MoveToken(gs._id.stringify, p1.identifier)
       expectMsg(Updated(gs._id.stringify))
 
     }
@@ -47,19 +51,22 @@ class MoveTokenActorSpec extends TestKit(ActorSystem("MyTest")) with MockFactory
 
       val gameState = mock[GameStateDao]
 
-      val p1 = Player(identifier = "player1", dice = 3, tokenLocation = 1)
-      val gs = GameState(player = p1, state = true)
+      val p1 = Player("player1", dice = 3, tokenLocation = 1,  roll = true)
+      val p2 = Player("player2")
+      val players = List(p1, p2)
+      val gs = GameState(player = players, state = true)
 
       (gameState.find _).expects(*).returning(Future(Option(gs)))
 
       (gameState.update _).expects(where {
-        (gameState: GameState) => gameState.player.tokenLocation == 4
+        (gameState: GameState) =>
+          gameState.player.find(p => p.identifier == p1.identifier).get.tokenLocation == 4
       }).returning(Future(gs._id.stringify))
 
       val moveTokenActor = system.actorOf(Props(classOf[MoveTokenActor], gameState))
       implicit val timeout: Timeout = 5.seconds
 
-      moveTokenActor ! MoveToken(gs._id.stringify, gs.player.identifier)
+      moveTokenActor ! MoveToken(gs._id.stringify, p1.identifier)
       expectMsg(Updated(gs._id.stringify))
 
     }
@@ -68,19 +75,22 @@ class MoveTokenActorSpec extends TestKit(ActorSystem("MyTest")) with MockFactory
 
       val gameState = mock[GameStateDao]
 
-      val p1 = Player(identifier = "player1", dice = 4, tokenLocation = 4)
-      val gs = GameState(player = p1, state = true)
+      val p1 = Player("player1", dice = 4, tokenLocation = 4,  roll = true)
+      val p2 = Player("player2")
+      val players = List(p1, p2)
+      val gs = GameState(player = players, state = true)
 
       (gameState.find _).expects(*).returning(Future(Option(gs)))
 
       (gameState.update _).expects(where {
-        (gameState: GameState) => gameState.player.tokenLocation == 8
+        (gameState: GameState) =>
+          gameState.player.find(p => p.identifier == p1.identifier).get.tokenLocation == 8
       }).returning(Future(gs._id.stringify))
 
       val moveTokenActor = system.actorOf(Props(classOf[MoveTokenActor], gameState))
       implicit val timeout: Timeout = 5.seconds
 
-      moveTokenActor ! MoveToken(gs._id.stringify, gs.player.identifier)
+      moveTokenActor ! MoveToken(gs._id.stringify, p1.identifier)
       expectMsg(Updated(gs._id.stringify))
 
     }
@@ -102,8 +112,11 @@ class MoveTokenActorSpec extends TestKit(ActorSystem("MyTest")) with MockFactory
 
       val gameState = mock[GameStateDao]
 
-      val p1 = Player(identifier = "player1", dice = 4, tokenLocation = 4)
-      val gs = GameState(player = p1, state = true)
+      val p1 = Player("player1", dice = 4, tokenLocation = 4,  roll = true)
+      val p2 = Player("player2")
+      val players = List(p1, p2)
+      val gs = GameState(player = players, state = true)
+
 
       (gameState.find _).expects(*).returning(Future(Option(gs)))
 
@@ -119,20 +132,25 @@ class MoveTokenActorSpec extends TestKit(ActorSystem("MyTest")) with MockFactory
 
       val gameState = mock[GameStateDao]
 
-      val p1 = Player(identifier = "player1", dice = 3, tokenLocation = 97)
-      val gs = GameState(player = p1, state = true)
+      val p1 = Player("player1", dice = 3, tokenLocation = 97,  roll = true)
+      val p2 = Player("player2")
+      val players = List(p1, p2)
+      val gs = GameState(player = players, state = true)
+
 
       (gameState.find _).expects(*).returning(Future(Option(gs)))
 
       (gameState.update _).expects(where {
-        (gameState: GameState) => gameState.player.tokenLocation == 100 && gameState.state == false
+
+        (gameState: GameState) =>
+          gameState.player.find(p => p.identifier == p1.identifier).get.tokenLocation == 100 && gameState == false
       }).returning(Future(gs._id.stringify))
 
       val moveTokenActor = system.actorOf(Props(classOf[MoveTokenActor], gameState))
       implicit val timeout: Timeout = 5.seconds
 
-      moveTokenActor ! MoveToken(gs._id.stringify, gs.player.identifier)
-      expectMsg(PlayerWon(gs.player.identifier))
+      moveTokenActor ! MoveToken(gs._id.stringify, p1.identifier)
+      expectMsg(PlayerWon(p1.identifier))
 
     }
 
@@ -140,14 +158,16 @@ class MoveTokenActorSpec extends TestKit(ActorSystem("MyTest")) with MockFactory
 
       val gameState = mock[GameStateDao]
 
-      val p1 = Player(identifier = "player1", dice = 4, tokenLocation = 97)
-      val gs = GameState(player = p1, state = true)
+      val p1 = Player("player1", dice = 4, tokenLocation = 97,  roll = true)
+      val p2 = Player("player2")
+      val players = List(p1, p2)
+      val gs = GameState(player = players, state = true)
 
       (gameState.find _).expects(*).returning(Future(Option(gs)))
       val moveTokenActor = system.actorOf(Props(classOf[MoveTokenActor], gameState))
       implicit val timeout: Timeout = 5.seconds
 
-      moveTokenActor ! MoveToken(gs._id.stringify, gs.player.identifier)
+      moveTokenActor ! MoveToken(gs._id.stringify, p1.identifier)
       expectMsg(NotUpdated())
 
     }
@@ -156,19 +176,22 @@ class MoveTokenActorSpec extends TestKit(ActorSystem("MyTest")) with MockFactory
 
       val gameState = mock[GameStateDao]
 
-      val p1 = Player(identifier = "player1", dice = 2, tokenLocation = 10)
-      val gs = GameState(player = p1, state = true)
+      val p1 = Player("player1", dice = 2, tokenLocation = 10,  roll = true)
+      val p2 = Player("player2")
+      val players = List(p1, p2)
+      val gs = GameState(player = players, state = true)
 
       (gameState.find _).expects(*).returning(Future(Option(gs)))
 
       (gameState.update _).expects(where {
-        (gameState: GameState) => gameState.player.tokenLocation == 2
+        (gameState: GameState) =>
+          gameState.player.find(p => p.identifier == p1.identifier).get.tokenLocation == 2
       }).returning(Future(gs._id.stringify))
 
       val moveTokenActor = system.actorOf(Props(classOf[MoveTokenActor], gameState))
       implicit val timeout: Timeout = 5.seconds
 
-      moveTokenActor ! MoveToken(gs._id.stringify, gs.player.identifier)
+      moveTokenActor ! MoveToken(gs._id.stringify, p1.identifier)
       expectMsg(Updated(gs._id.stringify))
 
     }
@@ -177,19 +200,23 @@ class MoveTokenActorSpec extends TestKit(ActorSystem("MyTest")) with MockFactory
 
       val gameState = mock[GameStateDao]
 
-      val p1 = Player(identifier = "player1", dice = 1, tokenLocation = 1)
-      val gs = GameState(player = p1, state = true)
+      val p1 = Player("player1", dice = 2, tokenLocation = 1,  roll = true)
+      val p2 = Player("player2")
+      val players = List(p1, p2)
+      val gs = GameState(player = players, state = true)
+
 
       (gameState.find _).expects(*).returning(Future(Option(gs)))
 
       (gameState.update _).expects(where {
-        (gameState: GameState) => gameState.player.tokenLocation == 12
+        (gameState: GameState) =>
+          gameState.player.find(p => p.identifier == p1.identifier).get.tokenLocation == 12
       }).returning(Future(gs._id.stringify))
 
       val moveTokenActor = system.actorOf(Props(classOf[MoveTokenActor], gameState))
       implicit val timeout: Timeout = 5.seconds
 
-      moveTokenActor ! MoveToken(gs._id.stringify, gs.player.identifier)
+      moveTokenActor ! MoveToken(gs._id.stringify, p1.identifier)
       expectMsg(Updated(gs._id.stringify))
 
     }

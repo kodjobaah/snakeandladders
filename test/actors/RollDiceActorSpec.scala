@@ -28,24 +28,27 @@ class RollDiceActorSpec extends TestKit(ActorSystem("MyTest")) with MockFactory 
 
       val gameState = mock[GameStateDao]
 
-      val p1 = Player("player1")
-      val gs = GameState(player = p1, state = true)
+
+      val p1 = Player("player1", dice = 0, roll = true)
+      val p2 = Player("player2")
+      val players = List(p1, p2)
+      val gs = GameState(player = players, state = true)
 
       (gameState.find _).expects(*).returning(Future(Option(gs)))
 
       var diceRoll = 0
       (gameState.update _).expects(where {
-        (gameState: GameState) =>
-          {
-            diceRoll = gameState.player.dice
-            gameState.player.dice >= 1 && gameState.player.dice <= 6
-          }
+        (gameState: GameState) => {
+          val player = gameState.player.find(p => p.identifier == p1.identifier).get
+           diceRoll = player.dice
+          player.dice >=1 && player.dice <= 6
+        }
       }).returning(Future(gs._id.stringify))
 
       val rollDiceActor = system.actorOf(Props(classOf[DiceRollActor], gameState))
       implicit val timeout: Timeout = 5.seconds
 
-      rollDiceActor ! RollDice(gs._id.stringify, gs.player.identifier)
+      rollDiceActor ! RollDice(gs._id.stringify, p1.identifier)
 
       expectMsgClass(classOf[DiceRollGood])
     }
