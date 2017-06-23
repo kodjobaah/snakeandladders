@@ -3,10 +3,11 @@ package models
 import play.api.libs.json.OFormat
 import reactivemongo.bson.BSONObjectID
 import reactivemongo.play.json.BSONFormats.BSONObjectIDFormat
+import shapeless.ops.nat.GT.>
 
 case class GameState(
   _id: BSONObjectID = BSONObjectID.generate,
-  player: Player,
+  player: List[Player],
   state: Boolean
 )
 
