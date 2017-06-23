@@ -8,6 +8,7 @@ import shapeless.ops.nat.GT.>
 case class GameState(
   _id: BSONObjectID = BSONObjectID.generate,
   player: List[Player],
+  computer: Int = -1,
   state: Boolean
 )
 

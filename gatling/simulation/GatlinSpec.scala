@@ -20,7 +20,7 @@ class GatlinSpec extends Simulation {
 
     def refreshAfterOneSecond =
       exec(http("Index")
-        .post("/startGame")
+        .post("/startGame/4")
         .check(bodyString.saveAs("gameId"))
         .check(status.is(200))).pause(2)
         .exec(http("MakeFirstMove")

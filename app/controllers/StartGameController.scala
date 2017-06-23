@@ -15,8 +15,8 @@ import scala.concurrent.duration._
 class StartGameController @Inject() (@Named("gamestate-actor") gameStateActor: ActorRef)(implicit ec: ExecutionContext) extends Controller {
 
   implicit val timeout: Timeout = 5.seconds
-  def start = Action.async {
-    (gameStateActor ? Start).mapTo[String].map { message =>
+  def start(computer: String) = Action.async {
+    (gameStateActor ? Start(computer.toInt)).mapTo[String].map { message =>
       Ok(message)
     }
   }

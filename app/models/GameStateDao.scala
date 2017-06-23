@@ -20,7 +20,7 @@ class GameStateDao @Inject() (val reactiveMongoApi: ReactiveMongoApi) {
 
   import JsonFormats._
 
-  def createGame(playsFirstService: PlaysFirstService): Future[String] = {
+  def createGame(playsFirstService: PlaysFirstService, computer: Int): Future[String] = {
 
     def findPlayer(p1: (Player, Int), p2: (Player, Int)): Player = {
       val result = playsFirstService.whoPlayersFirst(p1, p2)
@@ -40,16 +40,28 @@ class GameStateDao @Inject() (val reactiveMongoApi: ReactiveMongoApi) {
 
     val players = first.identifier match {
       case "player1" =>
-        val p1 = Player("player1", roll = true)
-        val p2 = Player("player2", roll = false)
-        List(p1, p2)
+        if (computer < 1) {
+          val p1 = Player("player1", roll = true)
+          val p2 = Player("player2", roll = false)
+          List(p1, p2)
+        } else {
+          val p1 = Player("player1", dice = 0, tokenLocation = 1, roll = true)
+          val p2 = Player("player2", dice = 0, tokenLocation = 1, roll = false)
+          List(p1, p2)
+        }
       case "player2" =>
-        val p1 = Player("player1", roll = false)
-        val p2 = Player("player2", roll = true)
-        List(p1, p2)
+        if (computer < 1) {
+          val p1 = Player("player1", roll = false)
+          val p2 = Player("player2", roll = true)
+          List(p1, p2)
+        } else {
+          val p1 = Player("player1", tokenLocation = 1, dice = 0, roll = true)
+          val p2 = Player("player2", tokenLocation = 1, dice = 0, roll = false)
+          List(p1, p2)
+        }
     }
 
-    val gs = GameState(player = players, state = true)
+    val gs = GameState(player = players, computer = computer, state = true)
     val result: Future[WriteResult] = reactiveMongoApi.database.flatMap(_.collection[JSONCollection]("gamestate").insert(gs))
     result.map { x =>
       gs._id.stringify

@@ -6,6 +6,8 @@ import actors.DiceRollActor.{ DiceRollGood, DiceRollNotGood, RollDice }
 import akka.actor.Actor
 import models.GameStateDao
 import akka.pattern.pipe
+import service.Dice
+
 import scala.concurrent.Future
 
 object DiceRollActor {
@@ -35,7 +37,7 @@ class DiceRollActor @Inject() (val gameStateDao: GameStateDao) extends Actor {
             if (gs.player.find(p => p.identifier == playerId && p.roll == true && p.dice == 0).isDefined) {
               val playerOfInterest = gs.player.find(p => p.identifier == playerId && p.roll == true && p.dice == 0).get
               val playerTwo = gs.player.find(p => p.identifier != playerId).get
-              val dice = rollDice()
+              val dice = Dice.rollDice()
               val listPlayers = List(playerTwo, playerOfInterest.copy(dice = dice))
               gameStateDao.update(gs.copy(player = listPlayers)).map { result =>
                 DiceRollGood(dice.toString)
@@ -49,9 +51,4 @@ class DiceRollActor @Inject() (val gameStateDao: GameStateDao) extends Actor {
 
   }
 
-  def rollDice(): Int = {
-    val rnd = new scala.util.Random
-    val range = 1 to 6
-    range(rnd.nextInt(range length))
-  }
 }

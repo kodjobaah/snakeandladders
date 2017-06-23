@@ -38,7 +38,7 @@ class GameStateActorSpec extends TestKit(ActorSystem("MyTest")) with MockFactory
 
       val gameStartActor = system.actorOf(Props(classOf[GameStateActor], gameState, playsFirstService))
       implicit val timeout: Timeout = 5.seconds
-      gameStartActor ! Start
+      gameStartActor ! Start(0)
       expectMsg(gs._id.stringify)
     }
 
@@ -56,11 +56,11 @@ class GameStateActorSpec extends TestKit(ActorSystem("MyTest")) with MockFactory
 
       (gameState.findActive _).expects().returning(Future(None))
 
-      (gameState.createGame _).expects(playsFirstService).returning(Future("myId"))
+      (gameState.createGame _).expects(playsFirstService, *).returning(Future("myId"))
 
       val gameStartActor = system.actorOf(Props(classOf[GameStateActor], gameState, playsFirstService))
       implicit val timeout: Timeout = 5.seconds
-      gameStartActor ! Start
+      gameStartActor ! Start(0)
       expectMsg("myId")
     }
 

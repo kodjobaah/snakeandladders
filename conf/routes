@@ -5,7 +5,7 @@
 
 # An example controller showing a sample home page
 
-POST    /startGame                  controllers.StartGameController.start
+POST    /startGame/:start                  controllers.StartGameController.start(start)
 
 POST    /moveToken/:id/:player      controllers.MoveTokenController.move(id, player)
 

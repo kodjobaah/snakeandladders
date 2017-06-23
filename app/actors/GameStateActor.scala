@@ -12,7 +12,7 @@ import scala.concurrent.Future
 
 object GameStateActor {
 
-  case object Start
+  case class Start(computer: Int)
 
 }
 
@@ -21,11 +21,11 @@ class GameStateActor @Inject() (val gameStateDao: GameStateDao, playsFirstServic
   import scala.concurrent.ExecutionContext.Implicits.global
 
   override def receive: Receive = {
-    case Start =>
+    case Start(computer) =>
 
       val result: Future[String] = gameStateDao.findActive.flatMap { gameState =>
         gameState match {
-          case None => gameStateDao.createGame(playsFirstService).map { gs => gs }
+          case None => gameStateDao.createGame(playsFirstService, computer).map { gs => gs }
           case Some(gs) => Future(gs._id.stringify)
         }
 

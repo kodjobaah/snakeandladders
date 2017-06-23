@@ -29,7 +29,7 @@ class MoveTokenActorSpec extends TestKit(ActorSystem("MyTest")) with MockFactory
       val p1 = Player("player1", roll = true)
       val p2 = Player("player2")
       val players = List(p1, p2)
-      val gs = GameState(player = players, state = true)
+      val gs = GameState(player = players, state = true, computer = 4)
 
       (gameState.find _).expects(*).returning(Future(Option(gs)))
 
@@ -56,7 +56,7 @@ class MoveTokenActorSpec extends TestKit(ActorSystem("MyTest")) with MockFactory
       val p1 = Player("player1", dice = 3, tokenLocation = 1, roll = true)
       val p2 = Player("player2")
       val players = List(p1, p2)
-      val gs = GameState(player = players, state = true)
+      val gs = GameState(player = players, state = true, computer = 4)
 
       (gameState.find _).expects(*).returning(Future(Option(gs)))
 
@@ -82,7 +82,7 @@ class MoveTokenActorSpec extends TestKit(ActorSystem("MyTest")) with MockFactory
       val p1 = Player("player1", dice = 4, tokenLocation = 4, roll = true)
       val p2 = Player("player2")
       val players = List(p1, p2)
-      val gs = GameState(player = players, state = true)
+      val gs = GameState(player = players, state = true, computer = 4)
 
       (gameState.find _).expects(*).returning(Future(Option(gs)))
 
@@ -122,7 +122,7 @@ class MoveTokenActorSpec extends TestKit(ActorSystem("MyTest")) with MockFactory
       val p1 = Player("player1", dice = 4, tokenLocation = 4, roll = true)
       val p2 = Player("player2")
       val players = List(p1, p2)
-      val gs = GameState(player = players, state = true)
+      val gs = GameState(player = players, state = true, computer = 4)
 
       (gameState.find _).expects(*).returning(Future(Option(gs)))
 
@@ -141,7 +141,7 @@ class MoveTokenActorSpec extends TestKit(ActorSystem("MyTest")) with MockFactory
       val p1 = Player("player1", dice = 3, tokenLocation = 97, roll = true)
       val p2 = Player("player2")
       val players = List(p1, p2)
-      val gs = GameState(player = players, state = true)
+      val gs = GameState(player = players, state = true, computer = 4)
 
       (gameState.find _).expects(*).returning(Future(Option(gs)))
 
@@ -167,7 +167,7 @@ class MoveTokenActorSpec extends TestKit(ActorSystem("MyTest")) with MockFactory
       val p1 = Player("player1", dice = 4, tokenLocation = 97, roll = true)
       val p2 = Player("player2")
       val players = List(p1, p2)
-      val gs = GameState(player = players, state = true)
+      val gs = GameState(player = players, state = true, computer = 4)
 
       (gameState.find _).expects(*).returning(Future(Option(gs)))
       val moveTokenActor = system.actorOf(Props(classOf[MoveTokenActor], gameState))
@@ -213,7 +213,7 @@ class MoveTokenActorSpec extends TestKit(ActorSystem("MyTest")) with MockFactory
       val p1 = Player("player1", dice = 1, tokenLocation = 1, roll = true)
       val p2 = Player("player2")
       val players = List(p1, p2)
-      val gs = GameState(player = players, state = true)
+      val gs = GameState(player = players, state = true, computer = 4)
 
       (gameState.find _).expects(*).returning(Future(Option(gs)))
 
