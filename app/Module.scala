@@ -1,4 +1,4 @@
-import actors.{ GameStateActor, MoveTokenActor }
+import actors.{ DiceRollActor, GameStateActor, MoveTokenActor }
 import com.google.inject.AbstractModule
 import models.GameStateDao
 import play.api.libs.concurrent.AkkaGuiceSupport
@@ -8,5 +8,6 @@ class Module extends AbstractModule with AkkaGuiceSupport {
     bind(classOf[GameStateDao])
     bindActor[GameStateActor]("gamestate-actor")
     bindActor[MoveTokenActor]("movetoken-actor")
+    bindActor[DiceRollActor]("rolldice-actor")
   }
 }

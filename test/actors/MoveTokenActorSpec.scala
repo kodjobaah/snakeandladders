@@ -1,11 +1,11 @@
 package actors
 
 import actors.MoveTokenActor._
-import akka.actor.{ActorSystem, Props}
-import akka.testkit.{ImplicitSender, TestActors, TestKit}
-import models.{GameState, GameStateDao, Player}
+import akka.actor.{ ActorSystem, Props }
+import akka.testkit.{ ImplicitSender, TestActors, TestKit }
+import models.{ GameState, GameStateDao, Player }
 import org.scalamock.scalatest.MockFactory
-import org.scalatest.{BeforeAndAfterAll, Matchers, WordSpecLike}
+import org.scalatest.{ BeforeAndAfterAll, Matchers, WordSpecLike }
 import akka.util.Timeout
 
 import scala.concurrent.duration._

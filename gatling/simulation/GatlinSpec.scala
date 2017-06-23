@@ -23,11 +23,17 @@ class GatlinSpec extends Simulation {
         .post("/startGame")
         .check(bodyString.saveAs("gameId"))
         .check(status.is(200))).pause(2)
+        .exec(http("MakeFirstMove")
+        .post("/moveToken/${gameId}/player1")
+        .check(bodyString.saveAs("resultId"))).pause(2)
+        .exec(http("DiceRoll")
+        .post("/diceRoll/${gameId}/player1")
+        .check(bodyString.saveAs("diceRollId"))).pause(2)
         .exec(http("MoveToken")
         .post("/moveToken/${gameId}/player1")
-          .check(bodyString.saveAs("resultId")))
+        .check(bodyString.saveAs("resultId")))
         .exec(session => {
-          val maybeId = session.get("resultId").asOption[String]
+          val maybeId = session.get("diceRollId").asOption[String]
           println(maybeId.getOrElse("COULD NOT FIND ID"))
           session
         })
