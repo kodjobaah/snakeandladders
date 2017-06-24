@@ -2,7 +2,7 @@ package controllers
 
 import javax.inject.{ Inject, Named, Singleton }
 
-import actors.GameStateActor.Start
+import actors.GameStateActor.{ GameExist, NewGame, Start }
 import akka.actor.ActorRef
 import akka.pattern.ask
 import akka.util.Timeout
@@ -16,8 +16,11 @@ class StartGameController @Inject() (@Named("gamestate-actor") gameStateActor: A
 
   implicit val timeout: Timeout = 5.seconds
   def start(computer: String) = Action.async {
-    (gameStateActor ? Start(computer.toInt)).mapTo[String].map { message =>
-      Ok(message)
+    (gameStateActor ? Start(computer.toInt)).map { message =>
+      message match {
+        case NewGame(gs) => Created(gs)
+        case GameExist(gs) => Accepted(gs)
+      }
     }
   }
 }

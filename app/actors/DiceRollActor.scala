@@ -14,7 +14,7 @@ object DiceRollActor {
 
   case class RollDice(gameId: String, playerId: String)
 
-  sealed trait DiceRoll
+  sealed trait DiceRoll extends Product with Serializable
 
   case class DiceRollGood(value: String) extends DiceRoll
   case class DiceRollNotGood() extends DiceRoll
@@ -28,7 +28,7 @@ class DiceRollActor @Inject() (val gameStateDao: GameStateDao) extends Actor {
   override def receive: Receive = {
 
     case RollDice(gameId, playerId) =>
-      val result: Future[DiceRollActor.DiceRoll with Product with Serializable] = gameStateDao.find(gameId).flatMap { gameState =>
+      val result: Future[DiceRollActor.DiceRoll] = gameStateDao.find(gameId).flatMap { gameState =>
 
         gameState match {
           case None => Future(DiceRollNotGood())

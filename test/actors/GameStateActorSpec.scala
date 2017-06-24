@@ -1,6 +1,6 @@
 package actors
 
-import actors.GameStateActor.Start
+import actors.GameStateActor.{ GameExist, NewGame, Start }
 import akka.actor.{ ActorSystem, Props }
 import akka.testkit.{ ImplicitSender, TestKit }
 import akka.util.Timeout
@@ -39,7 +39,7 @@ class GameStateActorSpec extends TestKit(ActorSystem("MyTest")) with MockFactory
       val gameStartActor = system.actorOf(Props(classOf[GameStateActor], gameState, playsFirstService))
       implicit val timeout: Timeout = 5.seconds
       gameStartActor ! Start(0)
-      expectMsg(gs._id.stringify)
+      expectMsg(GameExist(gs._id.stringify))
     }
 
     "create a new game state if there is not an active one and return the id" in {
@@ -61,7 +61,7 @@ class GameStateActorSpec extends TestKit(ActorSystem("MyTest")) with MockFactory
       val gameStartActor = system.actorOf(Props(classOf[GameStateActor], gameState, playsFirstService))
       implicit val timeout: Timeout = 5.seconds
       gameStartActor ! Start(0)
-      expectMsg("myId")
+      expectMsg(NewGame("myId"))
     }
 
   }

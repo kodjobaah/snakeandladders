@@ -2,7 +2,7 @@ package actors
 
 import javax.inject.Inject
 
-import actors.GameStateActor.Start
+import actors.GameStateActor.{ GameCreation, GameExist, NewGame, Start }
 import akka.actor.Actor
 import models.GameStateDao
 import akka.pattern.pipe
@@ -14,6 +14,10 @@ object GameStateActor {
 
   case class Start(computer: Int)
 
+  sealed trait GameCreation extends Product with Serializable
+  case class NewGame(gameId: String) extends GameCreation
+  case class GameExist(gameId: String) extends GameCreation
+
 }
 
 class GameStateActor @Inject() (val gameStateDao: GameStateDao, playsFirstService: PlaysFirstService) extends Actor {
@@ -23,10 +27,12 @@ class GameStateActor @Inject() (val gameStateDao: GameStateDao, playsFirstServic
   override def receive: Receive = {
     case Start(computer) =>
 
-      val result: Future[String] = gameStateDao.findActive.flatMap { gameState =>
+      val result: Future[GameCreation] = gameStateDao.findActive.flatMap { gameState =>
         gameState match {
-          case None => gameStateDao.createGame(playsFirstService, computer).map { gs => gs }
-          case Some(gs) => Future(gs._id.stringify)
+          case None => gameStateDao.createGame(playsFirstService, computer).map { gs =>
+            NewGame(gs)
+          }
+          case Some(gs) => Future(GameExist(gs._id.stringify))
         }
 
       }

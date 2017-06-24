@@ -28,8 +28,9 @@ libraryDependencies ++= Seq(
   "io.gatling.highcharts" % "gatling-charts-highcharts" % "2.2.5" % Test,
   "io.gatling" % "gatling-test-framework" % "2.2.5" % Test,
   "com.typesafe.akka" %% "akka-testkit" % "2.4.17" % Test,
-  "org.scalatest" % "scalatest_2.11" % "3.0.1" % Test,
-  "org.eu.acolyte" %% "reactive-mongo" % "1.0.41-j7p" % Test,
+  "org.scalatest" %% "scalatest" % "3.0.1" % Test,
+  specs2 % Test,
+"org.eu.acolyte" %% "reactive-mongo" % "1.0.41-j7p" % Test,
   "com.github.simplyscala" %% "scalatest-embedmongo" % "0.2.4" %  Test,
   "org.scalamock" %% "scalamock-scalatest-support" % "3.6.0" % Test,
   "org.scalatestplus.play" %% "scalatestplus-play" % "2.0.0" % Test

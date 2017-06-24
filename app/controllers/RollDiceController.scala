@@ -20,7 +20,7 @@ class RollDiceController @Inject() (@Named("rolldice-actor") rollDiceActor: Acto
     (rollDiceActor ? rollDice).mapTo[DiceRoll].map { message =>
       message match {
         case DiceRollGood(dr) => Ok(dr)
-        case drg: DiceRollNotGood => Ok("dice roll not good")
+        case drg: DiceRollNotGood => Forbidden
       }
     }
   }
