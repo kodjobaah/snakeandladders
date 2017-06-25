@@ -91,7 +91,7 @@ class GameStateDao @Inject() (val reactiveMongoApi: ReactiveMongoApi) {
       case Success(id) =>
         for {
           gss <- gameStates
-          gameState <- gss.find(Json.obj("_id" -> id)).one[GameState]
+          gameState <- gss.find(BSONDocument("_id" -> id)).one[GameState]
         } yield gameState
       case Failure(f) => Future(None)
     }
