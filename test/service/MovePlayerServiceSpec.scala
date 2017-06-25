@@ -2,7 +2,7 @@ package service
 
 import actors.MoveTokenActor
 import actors.MoveTokenActor._
-import models.{GameState, GameStateDao, Player}
+import models.{GameState, GameStateDao, Movement, Player}
 import org.scalamock.scalatest.AsyncMockFactory
 import org.scalatest.Inside._
 import org.scalatest.{AsyncFlatSpecLike, Matchers}
@@ -196,7 +196,12 @@ class MovePlayerServiceSpec
     val p1 = Player("player1", dice = 2, tokenLocation = 10, roll = true)
     val p2 = Player("player2")
     val players = List(p1, p2)
-    val gs = GameState(player = players, state = true)
+    val ladders = List(Movement(start = 2, end = 12))
+    val snakes = List(Movement(start = 12, end = 2))
+    val gs = GameState(player = players,
+                       state = true,
+                       ladders = ladders,
+                       snakes = snakes)
 
     (gameStateDao.update _)
       .expects(where { (gameState: GameState) =>
@@ -227,7 +232,13 @@ class MovePlayerServiceSpec
     val p1 = Player("player1", dice = 1, tokenLocation = 1, roll = true)
     val p2 = Player("player2")
     val players = List(p1, p2)
-    val gs = GameState(player = players, state = true, computer = 4)
+    val ladders = List(Movement(start = 2, end = 12))
+    val snakes = List(Movement(start = 12, end = 2))
+    val gs = GameState(player = players,
+                       state = true,
+                       computer = 4,
+                       ladders = ladders,
+                       snakes = snakes)
 
     (gameStateDao.update _)
       .expects(where { (gameState: GameState) =>

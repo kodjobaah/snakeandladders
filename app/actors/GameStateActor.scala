@@ -20,11 +20,10 @@ object GameStateActor {
 
 }
 
-class GameStateActor @Inject() (
-  val gameStateDao: GameStateDao,
-  playsFirstService: PlaysFirstService
-)
-    extends Actor {
+class GameStateActor @Inject()(
+    val gameStateDao: GameStateDao,
+    playsFirstService: PlaysFirstService
+) extends Actor {
 
   import scala.concurrent.ExecutionContext.Implicits.global
 

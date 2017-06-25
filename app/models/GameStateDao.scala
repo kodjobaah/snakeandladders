@@ -65,7 +65,13 @@ class GameStateDao @Inject()(val reactiveMongoApi: ReactiveMongoApi) {
         }
     }
 
-    val gs = GameState(player = players, computer = computer, state = true)
+    val ladders = List(Movement(start = 2, end = 12))
+    val snakes = List(Movement(start = 12, end = 2))
+    val gs = GameState(player = players,
+                       computer = computer,
+                       state = true,
+                       ladders = ladders,
+                       snakes = snakes)
     val result: Future[WriteResult] = reactiveMongoApi.database.flatMap(
       _.collection[JSONCollection]("gamestate").insert(gs)
     )

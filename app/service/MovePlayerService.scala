@@ -3,16 +3,13 @@ package service
 import javax.inject.Inject
 
 import actors.MoveTokenActor._
-import models.{GameState, GameStateDao, Player}
+import models.{GameState, GameStateDao, Movement, Player}
 
 import scala.concurrent.Future
 
 class MovePlayerService @Inject()(gameStateDao: GameStateDao) {
 
   import scala.concurrent.ExecutionContext.Implicits.global
-
-  val snakes = Map(12 -> 2)
-  val ladders = Map(2 -> 12)
 
   def movePlayer(playerId: String,
                  gameState: GameState): Future[MoveTokenResults] = {
@@ -38,21 +35,23 @@ class MovePlayerService @Inject()(gameStateDao: GameStateDao) {
           val newLocation = playerOfInterest.dice + playerOfInterest.tokenLocation
           if (newLocation < 100) {
 
-            val newPosition = snakes.get(newLocation)
-            val newLadder = ladders.get(newLocation)
+            val newPosition: Option[Movement] =
+              gameState.snakes.filter(m => m.start == newLocation).headOption
+            val newLadder: Option[Movement] =
+              gameState.ladders.filter(m => m.start == newLocation).headOption
 
             (newPosition, newLadder) match {
               case (None, Some(ladder)) =>
                 val listPlayers = List(
                   playerTwo.copy(roll = true),
                   playerOfInterest
-                    .copy(tokenLocation = ladder, dice = 0, roll = false))
+                    .copy(tokenLocation = ladder.end, dice = 0, roll = false))
                 updatePlayer(listPlayers, gameState)
               case (Some(snake), None) =>
                 val listPlayers = List(
                   playerTwo.copy(roll = true),
                   playerOfInterest
-                    .copy(tokenLocation = snake, dice = 0, roll = false))
+                    .copy(tokenLocation = snake.end, dice = 0, roll = false))
                 updatePlayer(listPlayers, gameState)
               case _ =>
                 val listPlayers = List(
