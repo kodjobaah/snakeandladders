@@ -1,7 +1,7 @@
 package controllers
 
-import actors.DiceRollActor.{ DiceRollGood, RollDice }
-import actors.GameStateActor.{ GameExist, NewGame, Start }
+import actors.DiceRollActor.{DiceRollGood, RollDice}
+import actors.GameStateActor.{GameExist, NewGame, Start}
 import akka.testkit.TestProbe
 import org.scalatestplus.play._
 import play.api.mvc._
@@ -11,7 +11,10 @@ import play.libs.Akka
 
 import scala.concurrent.Future
 
-class StartGameControllerSpec extends PlaySpec with Results with OneAppPerTest {
+class StartGameControllerSpec
+    extends PlaySpec
+    with Results
+    with OneAppPerTest {
   import scala.concurrent.ExecutionContext.Implicits.global
   "StartGameController#start" should {
     "should return Created if a new game is created" in {

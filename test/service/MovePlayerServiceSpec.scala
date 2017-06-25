@@ -2,14 +2,17 @@ package service
 
 import actors.MoveTokenActor
 import actors.MoveTokenActor._
-import models.{ GameState, GameStateDao, Player }
+import models.{GameState, GameStateDao, Player}
 import org.scalamock.scalatest.AsyncMockFactory
 import org.scalatest.Inside._
-import org.scalatest.{ AsyncFlatSpecLike, Matchers }
+import org.scalatest.{AsyncFlatSpecLike, Matchers}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
-class MovePlayerServiceSpec extends AsyncFlatSpecLike with Matchers with AsyncMockFactory {
+class MovePlayerServiceSpec
+    extends AsyncFlatSpecLike
+    with Matchers
+    with AsyncMockFactory {
 
   "movePlayer" should "Token is placed on the board. Then the token is on square 1" in {
 
@@ -22,15 +25,17 @@ class MovePlayerServiceSpec extends AsyncFlatSpecLike with Matchers with AsyncMo
     val players = List(p1, p2)
     val gs = GameState(player = players, state = true, computer = 0)
 
-    (gameStateDao.update _).expects(where {
-      (gameState: GameState) =>
+    (gameStateDao.update _)
+      .expects(where { (gameState: GameState) =>
         val p_1 = gameState.player.find(p => p.identifier == p1.identifier).get
         val p_2 = gameState.player.find(p => p.identifier != p1.identifier).get
 
         p_1.tokenLocation == 1 && p_1.roll == false && p_2.roll == true
-    }).returning(Future(gs._id.stringify))
+      })
+      .returning(Future(gs._id.stringify))
 
-    val result: Future[MoveTokenActor.MoveTokenResults] = movePlayerService.movePlayer(p1.identifier, gs)
+    val result: Future[MoveTokenActor.MoveTokenResults] =
+      movePlayerService.movePlayer(p1.identifier, gs)
 
     result.map { result =>
       inside(result) {
@@ -50,14 +55,16 @@ class MovePlayerServiceSpec extends AsyncFlatSpecLike with Matchers with AsyncMo
     val players = List(p1, p2)
     val gs = GameState(player = players, state = true, computer = 0)
 
-    (gameStateDao.update _).expects(where {
-      (gameState: GameState) =>
+    (gameStateDao.update _)
+      .expects(where { (gameState: GameState) =>
         val p_1 = gameState.player.find(p => p.identifier == p1.identifier).get
         val p_2 = gameState.player.find(p => p.identifier != p1.identifier).get
         p_1.roll == false && p_1.tokenLocation == 4 && p_2.roll == true
-    }).returning(Future(gs._id.stringify))
+      })
+      .returning(Future(gs._id.stringify))
 
-    val result: Future[MoveTokenActor.MoveTokenResults] = movePlayerService.movePlayer(p1.identifier, gs)
+    val result: Future[MoveTokenActor.MoveTokenResults] =
+      movePlayerService.movePlayer(p1.identifier, gs)
 
     result.map { result =>
       inside(result) {
@@ -77,15 +84,16 @@ class MovePlayerServiceSpec extends AsyncFlatSpecLike with Matchers with AsyncMo
     val players = List(p1, p2)
     val gs = GameState(player = players, state = true, computer = 0)
 
-    (gameStateDao.update _).expects(where {
-      (gameState: GameState) =>
-
+    (gameStateDao.update _)
+      .expects(where { (gameState: GameState) =>
         val p_1 = gameState.player.find(p => p.identifier == p1.identifier).get
         val p_2 = gameState.player.find(p => p.identifier != p1.identifier).get
         p_1.roll == false && p_1.tokenLocation == 8 && p_2.roll == true
-    }).returning(Future(gs._id.stringify))
+      })
+      .returning(Future(gs._id.stringify))
 
-    val result: Future[MoveTokenActor.MoveTokenResults] = movePlayerService.movePlayer(p1.identifier, gs)
+    val result: Future[MoveTokenActor.MoveTokenResults] =
+      movePlayerService.movePlayer(p1.identifier, gs)
 
     result.map { result =>
       inside(result) {
@@ -105,7 +113,8 @@ class MovePlayerServiceSpec extends AsyncFlatSpecLike with Matchers with AsyncMo
     val p2 = Player("player2")
     val players = List(p1, p2)
     val gs = GameState(player = players, state = true, computer = 0)
-    val result: Future[MoveTokenActor.MoveTokenResults] = movePlayerService.movePlayer("playerDoesNotExist", gs)
+    val result: Future[MoveTokenActor.MoveTokenResults] =
+      movePlayerService.movePlayer("playerDoesNotExist", gs)
 
     result.map { result =>
       result should be(PlayerDoesNotExist())
@@ -121,7 +130,8 @@ class MovePlayerServiceSpec extends AsyncFlatSpecLike with Matchers with AsyncMo
     val p2 = Player("player2")
     val players = List(p1, p2)
     val gs = GameState(player = players, state = true, computer = 0)
-    val result: Future[MoveTokenActor.MoveTokenResults] = movePlayerService.movePlayer(p1.identifier, gs)
+    val result: Future[MoveTokenActor.MoveTokenResults] =
+      movePlayerService.movePlayer(p1.identifier, gs)
 
     result.map { result =>
       inside(result) {
@@ -141,14 +151,16 @@ class MovePlayerServiceSpec extends AsyncFlatSpecLike with Matchers with AsyncMo
     val players = List(p1, p2)
     val gs = GameState(player = players, state = true, computer = 0)
 
-    (gameStateDao.update _).expects(where {
-
-      (gameState: GameState) =>
-        val player = gameState.player.find(p => p.identifier == p1.identifier).get
+    (gameStateDao.update _)
+      .expects(where { (gameState: GameState) =>
+        val player =
+          gameState.player.find(p => p.identifier == p1.identifier).get
         player.tokenLocation == 100 && gameState.state == false
-    }).returning(Future(gs._id.stringify))
+      })
+      .returning(Future(gs._id.stringify))
 
-    val result: Future[MoveTokenActor.MoveTokenResults] = movePlayerService.movePlayer(p1.identifier, gs)
+    val result: Future[MoveTokenActor.MoveTokenResults] =
+      movePlayerService.movePlayer(p1.identifier, gs)
 
     result.map { result =>
       inside(result) {
@@ -168,7 +180,8 @@ class MovePlayerServiceSpec extends AsyncFlatSpecLike with Matchers with AsyncMo
     val players = List(p1, p2)
     val gs = GameState(player = players, state = true, computer = 0)
 
-    val result: Future[MoveTokenActor.MoveTokenResults] = movePlayerService.movePlayer(p1.identifier, gs)
+    val result: Future[MoveTokenActor.MoveTokenResults] =
+      movePlayerService.movePlayer(p1.identifier, gs)
 
     result.map { result =>
       result should be(SkipTurn())
@@ -185,16 +198,17 @@ class MovePlayerServiceSpec extends AsyncFlatSpecLike with Matchers with AsyncMo
     val players = List(p1, p2)
     val gs = GameState(player = players, state = true)
 
-    (gameStateDao.update _).expects(where {
-      (gameState: GameState) =>
-
+    (gameStateDao.update _)
+      .expects(where { (gameState: GameState) =>
         val p_1 = gameState.player.find(p => p.identifier == p1.identifier).get
         val p_2 = gameState.player.find(p => p.identifier != p1.identifier).get
         p_1.roll == false && p_1.tokenLocation == 2 && p_2.roll == true
 
-    }).returning(Future(gs._id.stringify))
+      })
+      .returning(Future(gs._id.stringify))
 
-    val result: Future[MoveTokenActor.MoveTokenResults] = movePlayerService.movePlayer(p1.identifier, gs)
+    val result: Future[MoveTokenActor.MoveTokenResults] =
+      movePlayerService.movePlayer(p1.identifier, gs)
 
     result.map { result =>
       inside(result) {
@@ -215,15 +229,16 @@ class MovePlayerServiceSpec extends AsyncFlatSpecLike with Matchers with AsyncMo
     val players = List(p1, p2)
     val gs = GameState(player = players, state = true, computer = 4)
 
-    (gameStateDao.update _).expects(where {
-      (gameState: GameState) =>
-
+    (gameStateDao.update _)
+      .expects(where { (gameState: GameState) =>
         val p_1 = gameState.player.find(p => p.identifier == p1.identifier).get
         val p_2 = gameState.player.find(p => p.identifier != p1.identifier).get
         p_1.roll == false && p_1.tokenLocation == 12 && p_2.roll == true
-    }).returning(Future(gs._id.stringify))
+      })
+      .returning(Future(gs._id.stringify))
 
-    val result: Future[MoveTokenActor.MoveTokenResults] = movePlayerService.movePlayer(p1.identifier, gs)
+    val result: Future[MoveTokenActor.MoveTokenResults] =
+      movePlayerService.movePlayer(p1.identifier, gs)
 
     result.map { result =>
       inside(result) {

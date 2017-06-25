@@ -1,18 +1,23 @@
 package actors
 
-import actors.GameStateActor.{ GameExist, NewGame, Start }
-import akka.actor.{ ActorSystem, Props }
-import akka.testkit.{ ImplicitSender, TestKit }
+import actors.GameStateActor.{GameExist, NewGame, Start}
+import akka.actor.{ActorSystem, Props}
+import akka.testkit.{ImplicitSender, TestKit}
 import akka.util.Timeout
-import models.{ GameState, GameStateDao, Player }
+import models.{GameState, GameStateDao, Player}
 import org.scalamock.scalatest.MockFactory
-import org.scalatest.{ BeforeAndAfterAll, Matchers, WordSpecLike }
+import org.scalatest.{BeforeAndAfterAll, Matchers, WordSpecLike}
 import service.PlaysFirstService
 
 import scala.concurrent.Future
 import scala.concurrent.duration._
 
-class GameStateActorSpec extends TestKit(ActorSystem("MyTest")) with MockFactory with ImplicitSender with WordSpecLike with Matchers
+class GameStateActorSpec
+    extends TestKit(ActorSystem("MyTest"))
+    with MockFactory
+    with ImplicitSender
+    with WordSpecLike
+    with Matchers
     with BeforeAndAfterAll {
 
   import scala.concurrent.ExecutionContext.Implicits.global
@@ -36,7 +41,8 @@ class GameStateActorSpec extends TestKit(ActorSystem("MyTest")) with MockFactory
 
       (gameState.findActive _).expects().returning(Future(Option(gs)))
 
-      val gameStartActor = system.actorOf(Props(classOf[GameStateActor], gameState, playsFirstService))
+      val gameStartActor = system.actorOf(
+        Props(classOf[GameStateActor], gameState, playsFirstService))
       implicit val timeout: Timeout = 5.seconds
       gameStartActor ! Start(0)
       expectMsg(GameExist(gs._id.stringify))
@@ -56,9 +62,12 @@ class GameStateActorSpec extends TestKit(ActorSystem("MyTest")) with MockFactory
 
       (gameState.findActive _).expects().returning(Future(None))
 
-      (gameState.createGame _).expects(playsFirstService, *).returning(Future("myId"))
+      (gameState.createGame _)
+        .expects(playsFirstService, *)
+        .returning(Future("myId"))
 
-      val gameStartActor = system.actorOf(Props(classOf[GameStateActor], gameState, playsFirstService))
+      val gameStartActor = system.actorOf(
+        Props(classOf[GameStateActor], gameState, playsFirstService))
       implicit val timeout: Timeout = 5.seconds
       gameStartActor ! Start(0)
       expectMsg(NewGame("myId"))

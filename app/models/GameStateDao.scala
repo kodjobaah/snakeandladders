@@ -16,11 +16,15 @@ import scala.util.{ Failure, Success }
 class GameStateDao @Inject() (val reactiveMongoApi: ReactiveMongoApi) {
 
   import scala.concurrent.ExecutionContext.Implicits.global
-  def gameStates = reactiveMongoApi.database.map(_.collection[JSONCollection]("gamestate"))
+  def gameStates =
+    reactiveMongoApi.database.map(_.collection[JSONCollection]("gamestate"))
 
   import JsonFormats._
 
-  def createGame(playsFirstService: PlaysFirstService, computer: Int): Future[String] = {
+  def createGame(
+    playsFirstService: PlaysFirstService,
+    computer: Int
+  ): Future[String] = {
 
     def findPlayer(p1: (Player, Int), p2: (Player, Int)): Player = {
       val result = playsFirstService.whoPlayersFirst(p1, p2)
@@ -62,7 +66,9 @@ class GameStateDao @Inject() (val reactiveMongoApi: ReactiveMongoApi) {
     }
 
     val gs = GameState(player = players, computer = computer, state = true)
-    val result: Future[WriteResult] = reactiveMongoApi.database.flatMap(_.collection[JSONCollection]("gamestate").insert(gs))
+    val result: Future[WriteResult] = reactiveMongoApi.database.flatMap(
+      _.collection[JSONCollection]("gamestate").insert(gs)
+    )
     result.map { x =>
       gs._id.stringify
     }
@@ -71,9 +77,12 @@ class GameStateDao @Inject() (val reactiveMongoApi: ReactiveMongoApi) {
 
   def update(gs: GameState): Future[String] = {
     val result: Future[WriteResult] = reactiveMongoApi.database.flatMap { x =>
-      x.collection[JSONCollection]("gamestate").update(BSONDocument("_id" -> gs._id), gs, upsert = false)
+      x.collection[JSONCollection]("gamestate")
+        .update(BSONDocument("_id" -> gs._id), gs, upsert = false)
     }
-    result.map { x => gs._id.stringify }
+    result.map { x =>
+      gs._id.stringify
+    }
 
   }
 
@@ -89,9 +98,10 @@ class GameStateDao @Inject() (val reactiveMongoApi: ReactiveMongoApi) {
 
   }
 
-  def findActive: Future[Option[GameState]] = for {
-    gss <- gameStates
-    gameState <- gss.find(Json.obj("state" -> true)).one[GameState]
-  } yield gameState
+  def findActive: Future[Option[GameState]] =
+    for {
+      gss <- gameStates
+      gameState <- gss.find(Json.obj("state" -> true)).one[GameState]
+    } yield gameState
 
 }

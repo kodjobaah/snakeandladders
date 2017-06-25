@@ -13,7 +13,13 @@ import scala.concurrent.duration._
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class MoveTokenController @Inject() (@Named("movetoken-actor") moveTokenActor: ActorRef)(implicit ec: ExecutionContext) extends Controller {
+class MoveTokenController @Inject() (
+  @Named("movetoken-actor") moveTokenActor: ActorRef
+)(
+  implicit
+  ec: ExecutionContext
+)
+    extends Controller {
 
   implicit val timeout: Timeout = 5.seconds
   def move(id: String, player: String) = Action.async {
@@ -22,7 +28,8 @@ class MoveTokenController @Inject() (@Named("movetoken-actor") moveTokenActor: A
       message match {
         case gme: GameDoesNotExist => BadRequest("game does not exist")
         case PlayerWon(playerId) => Ok(s"player won ${playerId}")
-        case playerNotExist: PlayerDoesNotExist => Unauthorized("player does not exist")
+        case playerNotExist: PlayerDoesNotExist =>
+          Unauthorized("player does not exist")
         case Updated(id) => Accepted(id)
         case nu: SkipTurn => NotModified
         case NeedsToRollDice(playerId) => MethodNotAllowed(playerId)

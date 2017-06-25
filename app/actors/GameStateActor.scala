@@ -20,20 +20,25 @@ object GameStateActor {
 
 }
 
-class GameStateActor @Inject() (val gameStateDao: GameStateDao, playsFirstService: PlaysFirstService) extends Actor {
+class GameStateActor @Inject() (
+  val gameStateDao: GameStateDao,
+  playsFirstService: PlaysFirstService
+)
+    extends Actor {
 
   import scala.concurrent.ExecutionContext.Implicits.global
 
   override def receive: Receive = {
     case Start(computer) =>
-
-      val result: Future[GameCreation] = gameStateDao.findActive.flatMap { gameState =>
-        gameState match {
-          case None => gameStateDao.createGame(playsFirstService, computer).map { gs =>
-            NewGame(gs)
+      val result: Future[GameCreation] = gameStateDao.findActive.flatMap {
+        gameState =>
+          gameState match {
+            case None =>
+              gameStateDao.createGame(playsFirstService, computer).map { gs =>
+                NewGame(gs)
+              }
+            case Some(gs) => Future(GameExist(gs._id.stringify))
           }
-          case Some(gs) => Future(GameExist(gs._id.stringify))
-        }
 
       }
       result pipeTo sender()

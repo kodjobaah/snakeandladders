@@ -1,6 +1,6 @@
 package controllers
 
-import actors.DiceRollActor.{ DiceRollGood, DiceRollNotGood, RollDice }
+import actors.DiceRollActor.{DiceRollGood, DiceRollNotGood, RollDice}
 import actors.MoveTokenActor._
 import akka.testkit.TestProbe
 import org.scalatestplus.play._
@@ -19,7 +19,8 @@ class RollDiceControllerSpec extends PlaySpec with Results with OneAppPerTest {
 
       val testProbe = TestProbe()(Akka.system)
       val controller = new RollDiceController(testProbe.ref)
-      val result: Future[Result] = controller.roll("gamestate", "playerId").apply(FakeRequest())
+      val result: Future[Result] =
+        controller.roll("gamestate", "playerId").apply(FakeRequest())
       testProbe.expectMsg(RollDice("gamestate", "playerId"))
       testProbe.reply(DiceRollGood("5"))
 
@@ -33,7 +34,8 @@ class RollDiceControllerSpec extends PlaySpec with Results with OneAppPerTest {
 
       val testProbe = TestProbe()(Akka.system)
       val controller = new RollDiceController(testProbe.ref)
-      val result: Future[Result] = controller.roll("gamestate", "playerId").apply(FakeRequest())
+      val result: Future[Result] =
+        controller.roll("gamestate", "playerId").apply(FakeRequest())
       testProbe.expectMsg(RollDice("gamestate", "playerId"))
       testProbe.reply(DiceRollNotGood())
 

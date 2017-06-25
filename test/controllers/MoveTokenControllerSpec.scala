@@ -10,7 +10,10 @@ import play.libs.Akka
 
 import scala.concurrent.Future
 
-class MoveTokenControllerSpec extends PlaySpec with Results with OneAppPerTest {
+class MoveTokenControllerSpec
+    extends PlaySpec
+    with Results
+    with OneAppPerTest {
   import scala.concurrent.ExecutionContext.Implicits.global
   "MoveTokenController#move" should {
     "should return Accepted if user was updated" in {
@@ -18,7 +21,8 @@ class MoveTokenControllerSpec extends PlaySpec with Results with OneAppPerTest {
       val testProbe = TestProbe()(Akka.system)
 
       val controller = new MoveTokenController(testProbe.ref)
-      val result: Future[Result] = controller.move("gamestate", "playerId").apply(FakeRequest())
+      val result: Future[Result] =
+        controller.move("gamestate", "playerId").apply(FakeRequest())
       testProbe.expectMsg(MoveToken("gamestate", "playerId"))
       testProbe.reply(Updated("updated"))
 
@@ -33,7 +37,8 @@ class MoveTokenControllerSpec extends PlaySpec with Results with OneAppPerTest {
       val testProbe = TestProbe()(Akka.system)
 
       val controller = new MoveTokenController(testProbe.ref)
-      val result: Future[Result] = controller.move("gamestate", "playerId").apply(FakeRequest())
+      val result: Future[Result] =
+        controller.move("gamestate", "playerId").apply(FakeRequest())
       testProbe.expectMsg(MoveToken("gamestate", "playerId"))
       testProbe.reply(GameDoesNotExist())
 
@@ -47,7 +52,8 @@ class MoveTokenControllerSpec extends PlaySpec with Results with OneAppPerTest {
       val testProbe = TestProbe()(Akka.system)
 
       val controller = new MoveTokenController(testProbe.ref)
-      val result: Future[Result] = controller.move("gamestate", "playerId").apply(FakeRequest())
+      val result: Future[Result] =
+        controller.move("gamestate", "playerId").apply(FakeRequest())
       testProbe.expectMsg(MoveToken("gamestate", "playerId"))
       testProbe.reply(PlayerDoesNotExist())
 
@@ -61,7 +67,8 @@ class MoveTokenControllerSpec extends PlaySpec with Results with OneAppPerTest {
       val testProbe = TestProbe()(Akka.system)
 
       val controller = new MoveTokenController(testProbe.ref)
-      val result: Future[Result] = controller.move("gamestate", "playerId").apply(FakeRequest())
+      val result: Future[Result] =
+        controller.move("gamestate", "playerId").apply(FakeRequest())
       testProbe.expectMsg(MoveToken("gamestate", "playerId"))
       testProbe.reply(PlayerWon("playerId"))
 
@@ -77,7 +84,8 @@ class MoveTokenControllerSpec extends PlaySpec with Results with OneAppPerTest {
       val testProbe = TestProbe()(Akka.system)
 
       val controller = new MoveTokenController(testProbe.ref)
-      val result: Future[Result] = controller.move("gamestate", "playerId").apply(FakeRequest())
+      val result: Future[Result] =
+        controller.move("gamestate", "playerId").apply(FakeRequest())
       testProbe.expectMsg(MoveToken("gamestate", "playerId"))
       testProbe.reply(SkipTurn())
 
@@ -91,7 +99,8 @@ class MoveTokenControllerSpec extends PlaySpec with Results with OneAppPerTest {
       val testProbe = TestProbe()(Akka.system)
 
       val controller = new MoveTokenController(testProbe.ref)
-      val result: Future[Result] = controller.move("gamestate", "playerId").apply(FakeRequest())
+      val result: Future[Result] =
+        controller.move("gamestate", "playerId").apply(FakeRequest())
       testProbe.expectMsg(MoveToken("gamestate", "playerId"))
       testProbe.reply(NeedsToRollDice("playerId"))
 

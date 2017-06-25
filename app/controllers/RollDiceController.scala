@@ -12,7 +12,13 @@ import scala.concurrent.duration._
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class RollDiceController @Inject() (@Named("rolldice-actor") rollDiceActor: ActorRef)(implicit ec: ExecutionContext) extends Controller {
+class RollDiceController @Inject() (
+  @Named("rolldice-actor") rollDiceActor: ActorRef
+)(
+  implicit
+  ec: ExecutionContext
+)
+    extends Controller {
 
   implicit val timeout: Timeout = 5.seconds
   def roll(id: String, player: String) = Action.async {

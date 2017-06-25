@@ -1,7 +1,7 @@
 package service
 
 import models.Player
-import org.scalatest.{ Matchers, WordSpec }
+import org.scalatest.{Matchers, WordSpec}
 
 class PlaysFirstServiceSpec extends WordSpec with Matchers {
 

@@ -22,7 +22,6 @@ lazy val root = (project in file("."))
     scalaSource in ItTest := baseDirectory.value / "/it/src"
   )
 
-
 scalaVersion := "2.11.11"
 
 libraryDependencies += filters
@@ -37,13 +36,11 @@ libraryDependencies ++= Seq(
   "com.typesafe.akka" %% "akka-testkit" % "2.4.17" % Test,
   "org.scalatest" %% "scalatest" % "3.0.1" % Test,
   specs2 % Test,
-"org.eu.acolyte" %% "reactive-mongo" % "1.0.41-j7p" % Test,
+  "org.eu.acolyte" %% "reactive-mongo" % "1.0.41-j7p" % Test,
   "de.flapdoodle.embed" % "de.flapdoodle.embed.mongo" % "2.0.0" % "test",
   "org.scalamock" %% "scalamock-scalatest-support" % "3.6.0" % Test,
   "org.scalatestplus.play" %% "scalatestplus-play" % "2.0.0" % Test
 )
-
-
 // Adds additional packages into Twirl
 //TwirlKeys.templateImports += "com.snakeandladders.controllers._"
 

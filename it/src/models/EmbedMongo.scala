@@ -1,9 +1,12 @@
 package models
 
-
 import de.flapdoodle.embed.mongo.config.{MongodConfigBuilder, Net}
 import de.flapdoodle.embed.mongo.distribution.Version
-import de.flapdoodle.embed.mongo.{MongodExecutable, MongodProcess, MongodStarter}
+import de.flapdoodle.embed.mongo.{
+  MongodExecutable,
+  MongodProcess,
+  MongodStarter
+}
 import de.flapdoodle.embed.process.runtime.Network
 import reactivemongo.api.MongoConnection.ParsedURI
 import reactivemongo.api._
@@ -27,7 +30,6 @@ trait EmbeddedMongo {
     import scala.concurrent.duration._
     val longTime = Long.MaxValue nanos
 
-
     val connection = db.connection
     connection.close()
 
@@ -46,7 +48,6 @@ trait EmbeddedMongo {
     mongodExe.stop()
   }
 
-
   def createDb(dbName: String): DefaultDB = {
     val connection = createConnection()
     connection(dbName)
@@ -54,19 +55,21 @@ trait EmbeddedMongo {
 
   private def createConnection(): MongoConnection = {
     val driver = new MongoDriver
-    driver.connection(ParsedURI(
-      hosts = List((testMongoHosts, testMongoPort)),
-      options = MongoConnectionOptions(),
-      ignoredOptions = List.empty[String],
-      db = None,
-      authenticate = None
-    ))
+    driver.connection(
+      ParsedURI(
+        hosts = List((testMongoHosts, testMongoPort)),
+        options = MongoConnectionOptions(),
+        ignoredOptions = List.empty[String],
+        db = None,
+        authenticate = None
+      ))
   }
 
-  private def prepareExe(): MongodExecutable = MongodStarter.getDefaultInstance.prepare(
-    new MongodConfigBuilder()
-      .version(Version.Main.PRODUCTION)
-      .net(new Net(testMongoHosts, testMongoPort, Network.localhostIsIPv6()))
-      .build())
+  private def prepareExe(): MongodExecutable =
+    MongodStarter.getDefaultInstance.prepare(
+      new MongodConfigBuilder()
+        .version(Version.Main.PRODUCTION)
+        .net(new Net(testMongoHosts, testMongoPort, Network.localhostIsIPv6()))
+        .build())
 
 }

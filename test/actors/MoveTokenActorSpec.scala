@@ -1,18 +1,23 @@
 package actors
 
 import actors.MoveTokenActor._
-import akka.actor.{ ActorSystem, Props }
-import akka.testkit.{ ImplicitSender, TestActors, TestKit }
-import models.{ GameState, GameStateDao, Player }
+import akka.actor.{ActorSystem, Props}
+import akka.testkit.{ImplicitSender, TestActors, TestKit}
+import models.{GameState, GameStateDao, Player}
 import org.scalamock.scalatest.MockFactory
-import org.scalatest.{ BeforeAndAfterAll, Matchers, WordSpecLike }
+import org.scalatest.{BeforeAndAfterAll, Matchers, WordSpecLike}
 import akka.util.Timeout
 import service.MovePlayerService
 
 import scala.concurrent.duration._
 import scala.concurrent.Future
 
-class MoveTokenActorSpec extends TestKit(ActorSystem("MyTest")) with MockFactory with ImplicitSender with WordSpecLike with Matchers
+class MoveTokenActorSpec
+    extends TestKit(ActorSystem("MyTest"))
+    with MockFactory
+    with ImplicitSender
+    with WordSpecLike
+    with Matchers
     with BeforeAndAfterAll {
 
   import scala.concurrent.ExecutionContext.Implicits.global
@@ -35,9 +40,12 @@ class MoveTokenActorSpec extends TestKit(ActorSystem("MyTest")) with MockFactory
 
       (gameStateDao.find _).expects(*).returning(Future(Option(gs)))
 
-      (movePlayerService.movePlayer _).expects(p1.identifier, gs).returning(Future(Updated(gs._id.stringify)))
+      (movePlayerService.movePlayer _)
+        .expects(p1.identifier, gs)
+        .returning(Future(Updated(gs._id.stringify)))
 
-      val moveTokenActor = system.actorOf(Props(classOf[MoveTokenActor], gameStateDao, movePlayerService))
+      val moveTokenActor = system.actorOf(
+        Props(classOf[MoveTokenActor], gameStateDao, movePlayerService))
 
       implicit val timeout: Timeout = 5.seconds
 
@@ -58,12 +66,17 @@ class MoveTokenActorSpec extends TestKit(ActorSystem("MyTest")) with MockFactory
 
       inSequence {
         (gameStateDao.find _).expects(*).returning(Future(Option(gs)))
-        (movePlayerService.movePlayer _).expects(p1.identifier, *).returning(Future(Updated(gs._id.stringify)))
+        (movePlayerService.movePlayer _)
+          .expects(p1.identifier, *)
+          .returning(Future(Updated(gs._id.stringify)))
         (gameStateDao.find _).expects(*).returning(Future(Option(gs)))
-        (movePlayerService.movePlayer _).expects(p2.identifier, *).returning(Future(Updated(gs._id.stringify)))
+        (movePlayerService.movePlayer _)
+          .expects(p2.identifier, *)
+          .returning(Future(Updated(gs._id.stringify)))
       }
 
-      val moveTokenActor = system.actorOf(Props(classOf[MoveTokenActor], gameStateDao, movePlayerService))
+      val moveTokenActor = system.actorOf(
+        Props(classOf[MoveTokenActor], gameStateDao, movePlayerService))
 
       implicit val timeout: Timeout = 5.seconds
 
@@ -83,12 +96,17 @@ class MoveTokenActorSpec extends TestKit(ActorSystem("MyTest")) with MockFactory
 
       inSequence {
         (gameStateDao.find _).expects(*).returning(Future(Option(gs)))
-        (movePlayerService.movePlayer _).expects(p1.identifier, *).returning(Future(SkipTurn()))
+        (movePlayerService.movePlayer _)
+          .expects(p1.identifier, *)
+          .returning(Future(SkipTurn()))
         (gameStateDao.find _).expects(*).returning(Future(Option(gs)))
-        (movePlayerService.movePlayer _).expects(p2.identifier, *).returning(Future(Updated(gs._id.stringify)))
+        (movePlayerService.movePlayer _)
+          .expects(p2.identifier, *)
+          .returning(Future(Updated(gs._id.stringify)))
       }
 
-      val moveTokenActor = system.actorOf(Props(classOf[MoveTokenActor], gameStateDao, movePlayerService))
+      val moveTokenActor = system.actorOf(
+        Props(classOf[MoveTokenActor], gameStateDao, movePlayerService))
 
       implicit val timeout: Timeout = 5.seconds
 
@@ -103,7 +121,8 @@ class MoveTokenActorSpec extends TestKit(ActorSystem("MyTest")) with MockFactory
 
       (gameStateDao.find _).expects(*).returning(Future(None))
 
-      val moveTokenActor = system.actorOf(Props(classOf[MoveTokenActor], gameStateDao, movePlayerService))
+      val moveTokenActor = system.actorOf(
+        Props(classOf[MoveTokenActor], gameStateDao, movePlayerService))
       implicit val timeout: Timeout = 5.seconds
 
       moveTokenActor ! MoveToken("not eixit", "not exist")
