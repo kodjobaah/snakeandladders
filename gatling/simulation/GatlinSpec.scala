@@ -28,7 +28,8 @@ object Index {
       .pause(2)
       .exec(session => {
         val maybeId = session.get("gameId").asOption[String]
-        println(s"this is the game id[${maybeId.getOrElse("COULD NOT FIND ID")}]")
+        println(
+          s"this is the game id[${maybeId.getOrElse("COULD NOT FIND ID")}]")
         session
       })
       .exec(http("DiceRoll")
