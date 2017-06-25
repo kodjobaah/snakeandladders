@@ -1,5 +1,26 @@
 # Snakes And Ladders #
 
+Note where ever a reference is made to `game state` this means json payload representation of the game..  
+Eg
+
+```json
+{
+   "_id":{"$oid":"594fe2ef331a00213f900ade"},
+  "player":[
+        {"identifier":"player1","dice":0,"tokenLocation":1,"roll":true},
+        {"identifier":"player2","dice":0,"tokenLocation":1,"roll":false}
+        ],
+   "computer":10,
+   "snakes":[
+          {"start":12,"end":2}
+          ],
+   "ladders":[{
+          "start":2,"end":12}
+          ],
+   "state":true
+}
+
+```
 #### Starting game ####
 
 You must create a post request to the following endpoint  
