@@ -1,14 +1,13 @@
 package controllers
 
 import actors.MoveTokenActor._
-import models.JsonFormats._
 import akka.testkit.TestProbe
+import models.JsonFormats._
 import models.{GameState, Player}
 import org.scalatestplus.play._
 import play.api.mvc._
 import play.api.test.Helpers._
 import play.api.test._
-import play.libs.Akka
 
 import scala.concurrent.Future
 
@@ -20,7 +19,7 @@ class MoveTokenControllerSpec
   "MoveTokenController#move" should {
     "should return Accepted if user was updated" in {
 
-      val testProbe = TestProbe()(Akka.system)
+      val testProbe = TestProbe()(app.actorSystem)
       val gs = GameState(player = List.empty[Player], state = true)
 
       val controller = new MoveTokenController(testProbe.ref)
@@ -37,7 +36,7 @@ class MoveTokenControllerSpec
 
     "should return BadRequest if game does not exist" in {
 
-      val testProbe = TestProbe()(Akka.system)
+      val testProbe = TestProbe()(app.actorSystem)
 
       val controller = new MoveTokenController(testProbe.ref)
       val result: Future[Result] =
@@ -52,7 +51,7 @@ class MoveTokenControllerSpec
 
     "should return Unauthorised if player does not exist" in {
 
-      val testProbe = TestProbe()(Akka.system)
+      val testProbe = TestProbe()(app.actorSystem)
 
       val controller = new MoveTokenController(testProbe.ref)
       val result: Future[Result] =
@@ -67,7 +66,7 @@ class MoveTokenControllerSpec
 
     "should return Ok if player has won" in {
 
-      val testProbe = TestProbe()(Akka.system)
+      val testProbe = TestProbe()(app.actorSystem)
 
       val controller = new MoveTokenController(testProbe.ref)
       val result: Future[Result] =
@@ -84,7 +83,7 @@ class MoveTokenControllerSpec
 
     "should return NotModified if player move was skipped" in {
 
-      val testProbe = TestProbe()(Akka.system)
+      val testProbe = TestProbe()(app.actorSystem)
 
       val controller = new MoveTokenController(testProbe.ref)
       val result: Future[Result] =
@@ -99,7 +98,7 @@ class MoveTokenControllerSpec
 
     "should return MethodNotAllowed if player needs to roll a dice" in {
 
-      val testProbe = TestProbe()(Akka.system)
+      val testProbe = TestProbe()(app.actorSystem)
 
       val controller = new MoveTokenController(testProbe.ref)
       val result: Future[Result] =

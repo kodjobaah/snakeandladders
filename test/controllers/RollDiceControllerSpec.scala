@@ -1,13 +1,11 @@
 package controllers
 
 import actors.DiceRollActor.{DiceRollGood, DiceRollNotGood, RollDice}
-import actors.MoveTokenActor._
 import akka.testkit.TestProbe
 import org.scalatestplus.play._
 import play.api.mvc._
 import play.api.test.Helpers._
 import play.api.test._
-import play.libs.Akka
 
 import scala.concurrent.Future
 
@@ -17,7 +15,7 @@ class RollDiceControllerSpec extends PlaySpec with Results with OneAppPerTest {
   "RollDiceController#roll" should {
     "should return Ok if is successful" in {
 
-      val testProbe = TestProbe()(Akka.system)
+      val testProbe = TestProbe()(app.actorSystem)
       val controller = new RollDiceController(testProbe.ref)
       val result: Future[Result] =
         controller.roll("gamestate", "playerId").apply(FakeRequest())
@@ -32,7 +30,7 @@ class RollDiceControllerSpec extends PlaySpec with Results with OneAppPerTest {
 
     "should return Forbidden if dice not rolled" in {
 
-      val testProbe = TestProbe()(Akka.system)
+      val testProbe = TestProbe()(app.actorSystem)
       val controller = new RollDiceController(testProbe.ref)
       val result: Future[Result] =
         controller.roll("gamestate", "playerId").apply(FakeRequest())
