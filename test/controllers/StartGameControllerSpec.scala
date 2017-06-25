@@ -46,5 +46,17 @@ class StartGameControllerSpec
       val bodyText: GameState = contentAsJson(result).validate[GameState].get
       bodyText._id.stringify mustBe gs._id.stringify
     }
+
+    "should return BadRequest if the input is not a number" in {
+
+      val testProbe = TestProbe()(app.actorSystem)
+      val gs = GameState(player = List.empty[Player], state = true)
+      val controller = new StartGameController(testProbe.ref)
+      val result: Future[Result] = controller.start("adafad").apply(FakeRequest())
+
+      val state: Int = status(result)
+      state mustBe 400
+
+    }
   }
 }

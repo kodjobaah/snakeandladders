@@ -9,6 +9,7 @@ You must create a post request to the following endpoint
 | ------------- | ------------- | ------------- |
 | 201  | New game created  | game state |
 | 202  | Game already exist  | game state |
+| 400  | Param is not a number  | |
 
 if **${start} > 0** This starts game for a user against a computer: user id = "player1"  
 if **${start} < 1** This starts game for two users: "player1" and "player2"
