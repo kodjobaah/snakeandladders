@@ -5,14 +5,21 @@ organization := "com.snakeandladders"
 version := "1.0-SNAPSHOT"
 
 lazy val GatlingTest = config("gatling") extend Test
+resolvers += "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots" +
+  ""
+
+lazy val ItTest = config("it") extend Test
 
 lazy val root = (project in file("."))
   .enablePlugins(PlayScala, GatlingPlugin)
   .configs(GatlingTest)
+  .configs(ItTest)
   .settings(inConfig(GatlingTest)(Defaults.testSettings): _*)
+  .settings(inConfig(ItTest)(Defaults.testSettings): _*)
   .settings(
     name := """snake-and-ladders""",
-    scalaSource in GatlingTest := baseDirectory.value / "/gatling/simulation"
+    scalaSource in GatlingTest := baseDirectory.value / "/gatling/simulation",
+    scalaSource in ItTest := baseDirectory.value / "/it/src"
   )
 
 
@@ -31,7 +38,7 @@ libraryDependencies ++= Seq(
   "org.scalatest" %% "scalatest" % "3.0.1" % Test,
   specs2 % Test,
 "org.eu.acolyte" %% "reactive-mongo" % "1.0.41-j7p" % Test,
-  "com.github.simplyscala" %% "scalatest-embedmongo" % "0.2.4" %  Test,
+  "de.flapdoodle.embed" % "de.flapdoodle.embed.mongo" % "2.0.0" % "test",
   "org.scalamock" %% "scalamock-scalatest-support" % "3.6.0" % Test,
   "org.scalatestplus.play" %% "scalatestplus-play" % "2.0.0" % Test
 )
