@@ -1,7 +1,9 @@
 package controllers
 
 import actors.MoveTokenActor._
+import models.JsonFormats._
 import akka.testkit.TestProbe
+import models.{GameState, Player}
 import org.scalatestplus.play._
 import play.api.mvc._
 import play.api.test.Helpers._
@@ -19,17 +21,18 @@ class MoveTokenControllerSpec
     "should return Accepted if user was updated" in {
 
       val testProbe = TestProbe()(Akka.system)
+      val gs = GameState(player = List.empty[Player], state = true)
 
       val controller = new MoveTokenController(testProbe.ref)
       val result: Future[Result] =
         controller.move("gamestate", "playerId").apply(FakeRequest())
       testProbe.expectMsg(MoveToken("gamestate", "playerId"))
-      testProbe.reply(Updated("updated"))
+      testProbe.reply(Updated(gs))
 
       val state: Int = status(result)
       state mustBe 202
-      val bodyText: String = contentAsString(result)
-      bodyText mustBe "updated"
+      val bodyText: GameState = contentAsJson(result).validate[GameState].get
+      bodyText._id.stringify mustBe gs._id.stringify
     }
 
     "should return BadRequest if game does not exist" in {

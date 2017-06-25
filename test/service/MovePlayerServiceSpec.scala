@@ -32,15 +32,15 @@ class MovePlayerServiceSpec
 
         p_1.tokenLocation == 1 && p_1.roll == false && p_2.roll == true
       })
-      .returning(Future(gs._id.stringify))
+      .returning(Future(gs))
 
     val result: Future[MoveTokenActor.MoveTokenResults] =
       movePlayerService.movePlayer(p1.identifier, gs)
 
     result.map { result =>
       inside(result) {
-        case Updated(gamestateId) =>
-          gamestateId should be(gs._id.stringify)
+        case Updated(gamestate) =>
+          gamestate._id.stringify should be(gs._id.stringify)
       }
     }
   }
@@ -61,15 +61,15 @@ class MovePlayerServiceSpec
         val p_2 = gameState.player.find(p => p.identifier != p1.identifier).get
         p_1.roll == false && p_1.tokenLocation == 4 && p_2.roll == true
       })
-      .returning(Future(gs._id.stringify))
+      .returning(Future(gs))
 
     val result: Future[MoveTokenActor.MoveTokenResults] =
       movePlayerService.movePlayer(p1.identifier, gs)
 
     result.map { result =>
       inside(result) {
-        case Updated(gamestateId) =>
-          gamestateId should be(gs._id.stringify)
+        case Updated(gamestate) =>
+          gamestate._id.stringify should be(gs._id.stringify)
       }
     }
   }
@@ -90,15 +90,15 @@ class MovePlayerServiceSpec
         val p_2 = gameState.player.find(p => p.identifier != p1.identifier).get
         p_1.roll == false && p_1.tokenLocation == 8 && p_2.roll == true
       })
-      .returning(Future(gs._id.stringify))
+      .returning(Future(gs))
 
     val result: Future[MoveTokenActor.MoveTokenResults] =
       movePlayerService.movePlayer(p1.identifier, gs)
 
     result.map { result =>
       inside(result) {
-        case Updated(gamestateId) =>
-          gamestateId should be(gs._id.stringify)
+        case Updated(gamestate) =>
+          gamestate._id.stringify should be(gs._id.stringify)
       }
     }
 
@@ -157,7 +157,7 @@ class MovePlayerServiceSpec
           gameState.player.find(p => p.identifier == p1.identifier).get
         player.tokenLocation == 100 && gameState.state == false
       })
-      .returning(Future(gs._id.stringify))
+      .returning(Future(gs))
 
     val result: Future[MoveTokenActor.MoveTokenResults] =
       movePlayerService.movePlayer(p1.identifier, gs)
@@ -205,15 +205,15 @@ class MovePlayerServiceSpec
         p_1.roll == false && p_1.tokenLocation == 2 && p_2.roll == true
 
       })
-      .returning(Future(gs._id.stringify))
+      .returning(Future(gs))
 
     val result: Future[MoveTokenActor.MoveTokenResults] =
       movePlayerService.movePlayer(p1.identifier, gs)
 
     result.map { result =>
       inside(result) {
-        case Updated(gameStateId) =>
-          gameStateId should be(gs._id.stringify)
+        case Updated(gameState) =>
+          gameState._id.stringify should be(gs._id.stringify)
       }
     }
 
@@ -235,15 +235,15 @@ class MovePlayerServiceSpec
         val p_2 = gameState.player.find(p => p.identifier != p1.identifier).get
         p_1.roll == false && p_1.tokenLocation == 12 && p_2.roll == true
       })
-      .returning(Future(gs._id.stringify))
+      .returning(Future(gs))
 
     val result: Future[MoveTokenActor.MoveTokenResults] =
       movePlayerService.movePlayer(p1.identifier, gs)
 
     result.map { result =>
       inside(result) {
-        case Updated(gameStateId) =>
-          gameStateId should be(gs._id.stringify)
+        case Updated(gameState) =>
+          gameState._id.stringify should be(gs._id.stringify)
       }
     }
 

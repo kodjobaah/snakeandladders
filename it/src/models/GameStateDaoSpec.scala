@@ -29,7 +29,7 @@ class GameStateDaoSpec
 
     val playsFirstService = new PlaysFirstService()
     var gameStateDao = new GameStateDao(reactiveMongoApi)
-    val myout: Future[(String, Option[GameState])] = for {
+    val myout: Future[(GameState, Option[GameState])] = for {
       result <- gameStateDao.createGame(playsFirstService, 10)
       testData <- db
         .collection[JSONCollection]("gamestate")
@@ -39,7 +39,7 @@ class GameStateDaoSpec
 
     myout.flatMap {
       case (result, gs) =>
-        result should be(gs.value._id.stringify)
+        result._id.stringify should be(gs.value._id.stringify)
     }
   }
 
@@ -49,7 +49,7 @@ class GameStateDaoSpec
     val newGameState: GameState = createGameState
     val updatedGames = newGameState.copy(state = newState)
     var gameStateDao = new GameStateDao(reactiveMongoApi)
-    val myout: Future[(WriteResult, String, Option[GameState])] = for {
+    val myout: Future[(WriteResult, GameState, Option[GameState])] = for {
       initialInsert <- db
         .collection[JSONCollection]("gamestate")
         .insert(newGameState)

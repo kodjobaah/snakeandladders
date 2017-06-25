@@ -7,6 +7,7 @@ import akka.actor.ActorRef
 import akka.pattern.ask
 import akka.util.Timeout
 import play.api.http.Status.{BAD_REQUEST, UNAUTHORIZED}
+import play.api.libs.json.Json
 import play.api.mvc.{Action, Controller}
 
 import scala.concurrent.duration._
@@ -19,7 +20,10 @@ class MoveTokenController @Inject()(
     implicit ec: ExecutionContext
 ) extends Controller {
 
+  import models.JsonFormats._
+
   implicit val timeout: Timeout = 5.seconds
+
   def move(id: String, player: String) = Action.async {
     val moveToken = MoveToken(id, player)
     (moveTokenActor ? moveToken).mapTo[MoveTokenResults].map { message =>
@@ -28,7 +32,7 @@ class MoveTokenController @Inject()(
         case PlayerWon(playerId) => Ok(s"player won ${playerId}")
         case playerNotExist: PlayerDoesNotExist =>
           Unauthorized("player does not exist")
-        case Updated(id) => Accepted(id)
+        case Updated(id) => Accepted(Json.toJson(id))
         case nu: SkipTurn => NotModified
         case NeedsToRollDice(playerId) => MethodNotAllowed(playerId)
       }

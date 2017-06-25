@@ -2,9 +2,9 @@ package actors
 
 import javax.inject.Inject
 
-import actors.GameStateActor.{ GameCreation, GameExist, NewGame, Start }
+import actors.GameStateActor.{GameCreation, GameExist, NewGame, Start}
 import akka.actor.Actor
-import models.GameStateDao
+import models.{GameState, GameStateDao}
 import akka.pattern.pipe
 import service.PlaysFirstService
 
@@ -15,8 +15,8 @@ object GameStateActor {
   case class Start(computer: Int)
 
   sealed trait GameCreation extends Product with Serializable
-  case class NewGame(gameId: String) extends GameCreation
-  case class GameExist(gameId: String) extends GameCreation
+  case class NewGame(game: GameState) extends GameCreation
+  case class GameExist(game: GameState) extends GameCreation
 
 }
 
@@ -37,7 +37,7 @@ class GameStateActor @Inject() (
               gameStateDao.createGame(playsFirstService, computer).map { gs =>
                 NewGame(gs)
               }
-            case Some(gs) => Future(GameExist(gs._id.stringify))
+            case Some(gs) => Future(GameExist(gs))
           }
 
       }

@@ -46,7 +46,7 @@ class GameStateActorSpec
       )
       implicit val timeout: Timeout = 5.seconds
       gameStartActor ! Start(0)
-      expectMsg(GameExist(gs._id.stringify))
+      expectMsg(GameExist(gs))
     }
 
     "create a new game state if there is not an active one and return the id" in {
@@ -65,14 +65,14 @@ class GameStateActorSpec
 
       (gameState.createGame _)
         .expects(playsFirstService, *)
-        .returning(Future("myId"))
+        .returning(Future(gs))
 
       val gameStartActor = system.actorOf(
         Props(classOf[GameStateActor], gameState, playsFirstService)
       )
       implicit val timeout: Timeout = 5.seconds
       gameStartActor ! Start(0)
-      expectMsg(NewGame("myId"))
+      expectMsg(NewGame(gs))
     }
 
   }

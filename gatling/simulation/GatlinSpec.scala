@@ -21,25 +21,27 @@ object Index {
 
   def refreshAfterOneSecond =
     exec(
-      http("Index")
+      http("Start")
         .post("/startGame/4")
-        .check(bodyString.saveAs("gameId"))
+        .check(jsonPath("$._id.$oid").saveAs("gameId"))
         .check(status.is(201)))
+      .pause(2)
+      .exec(session => {
+        val maybeId = session.get("gameId").asOption[String]
+        println(s"this is the game id[${maybeId.getOrElse("COULD NOT FIND ID")}]")
+        session
+      })
+      .exec(http("DiceRoll")
+        .post("/diceRoll/${gameId}/player1")
+        .check(status.is(200)))
+      .pause(2)
+      .exec(http("MoveToken")
+        .post("/moveToken/${gameId}/player1")
+        .check(status.is(202)))
       .pause(2)
       .exec(http("DiceRoll")
         .post("/diceRoll/${gameId}/player1")
-        .check(status.is(200))
-        .check(bodyString.saveAs("resultId")))
-      .pause(2)
-      .exec(http("MakeFirstMove")
-        .post("/moveToken/${gameId}/player1")
-        .check(status.is(202))
-        .check(bodyString.saveAs("diceRollId")))
-      .pause(2)
-      .exec(http("diceRoll")
-        .post("/diceRoll/${gameId}/player1")
-        .check(status.is(200))
-        .check(bodyString.saveAs("resultId")))
+        .check(status.is(200)))
       .exec(session => {
         val maybeId = session.get("diceRollId").asOption[String]
         println(maybeId.getOrElse("COULD NOT FIND ID"))

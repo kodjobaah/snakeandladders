@@ -42,7 +42,7 @@ class MoveTokenActorSpec
 
       (movePlayerService.movePlayer _)
         .expects(p1.identifier, gs)
-        .returning(Future(Updated(gs._id.stringify)))
+        .returning(Future(Updated(gs)))
 
       val moveTokenActor = system.actorOf(
         Props(classOf[MoveTokenActor], gameStateDao, movePlayerService)
@@ -51,7 +51,7 @@ class MoveTokenActorSpec
       implicit val timeout: Timeout = 5.seconds
 
       moveTokenActor ! MoveToken(gs._id.stringify, p1.identifier)
-      expectMsg(Updated(gs._id.stringify))
+      expectMsg(Updated(gs))
 
     }
 
@@ -69,11 +69,11 @@ class MoveTokenActorSpec
         (gameStateDao.find _).expects(*).returning(Future(Option(gs)))
         (movePlayerService.movePlayer _)
           .expects(p1.identifier, *)
-          .returning(Future(Updated(gs._id.stringify)))
+          .returning(Future(Updated(gs)))
         (gameStateDao.find _).expects(*).returning(Future(Option(gs)))
         (movePlayerService.movePlayer _)
           .expects(p2.identifier, *)
-          .returning(Future(Updated(gs._id.stringify)))
+          .returning(Future(Updated(gs)))
       }
 
       val moveTokenActor = system.actorOf(
@@ -83,7 +83,7 @@ class MoveTokenActorSpec
       implicit val timeout: Timeout = 5.seconds
 
       moveTokenActor ! MoveToken(gs._id.stringify, p1.identifier)
-      expectMsg(Updated(gs._id.stringify))
+      expectMsg(Updated(gs))
 
     }
     "Game exist should perform move operation for computer if human is skipped" in {
@@ -104,7 +104,7 @@ class MoveTokenActorSpec
         (gameStateDao.find _).expects(*).returning(Future(Option(gs)))
         (movePlayerService.movePlayer _)
           .expects(p2.identifier, *)
-          .returning(Future(Updated(gs._id.stringify)))
+          .returning(Future(Updated(gs)))
       }
 
       val moveTokenActor = system.actorOf(
@@ -114,7 +114,7 @@ class MoveTokenActorSpec
       implicit val timeout: Timeout = 5.seconds
 
       moveTokenActor ! MoveToken(gs._id.stringify, p1.identifier)
-      expectMsg(Updated(gs._id.stringify))
+      expectMsg(Updated(gs))
 
     }
     "If the game does not exist it should not update" in {

@@ -7,8 +7,8 @@ You must create a post request to the following endpoint
 
 | Response  | Meaning | Body|  
 | ------------- | ------------- | ------------- |
-| 201  | New game created  | game id |
-| 202  | Game already exist  | game id |
+| 201  | New game created  | game state |
+| 202  | Game already exist  | game state |
 
 if **${start} > 0** This starts game for a user against a computer: user id = "player1"  
 if **${start} < 1** This starts game for two users: "player1" and "player2"
@@ -40,7 +40,7 @@ To move token make a post request to the following endpoint
 | Response  | Meaning | Body|  
 | ------------- | ------------- | ------------- |
 | 200  | Player won  | player id |
-| 202  | move made | game id |
+| 202  | move made | game state|
 | 304  | player was skipped |  |
 | 400  | game does not exist |  |
 | 401| player does not exist|  |

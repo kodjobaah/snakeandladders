@@ -50,7 +50,7 @@ class RollDiceActorSpec
             player.dice >= 1 && player.dice <= 6
           }
         })
-        .returning(Future(gs._id.stringify))
+        .returning(Future(gs))
 
       val rollDiceActor =
         system.actorOf(Props(classOf[DiceRollActor], gameState))

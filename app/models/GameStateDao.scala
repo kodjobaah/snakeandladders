@@ -24,7 +24,7 @@ class GameStateDao @Inject()(val reactiveMongoApi: ReactiveMongoApi) {
   def createGame(
       playsFirstService: PlaysFirstService,
       computer: Int
-  ): Future[String] = {
+  ): Future[GameState] = {
 
     def findPlayer(p1: (Player, Int), p2: (Player, Int)): Player = {
       val result = playsFirstService.whoPlayersFirst(p1, p2)
@@ -70,18 +70,18 @@ class GameStateDao @Inject()(val reactiveMongoApi: ReactiveMongoApi) {
       _.collection[JSONCollection]("gamestate").insert(gs)
     )
     result.map { x =>
-      gs._id.stringify
+      gs
     }
 
   }
 
-  def update(gs: GameState): Future[String] = {
+  def update(gs: GameState): Future[GameState] = {
     val result: Future[WriteResult] = reactiveMongoApi.database.flatMap { x =>
       x.collection[JSONCollection]("gamestate")
         .update(BSONDocument("_id" -> gs._id), gs, upsert = false)
     }
     result.map { x =>
-      gs._id.stringify
+      gs
     }
 
   }

@@ -20,7 +20,7 @@ object MoveTokenActor {
   case class PlayerWon(playerId: String) extends MoveTokenResults
   case class PlayerDoesNotExist() extends MoveTokenResults
   case class SkipTurn() extends MoveTokenResults
-  case class Updated(id: String) extends MoveTokenResults
+  case class Updated(gameState: GameState) extends MoveTokenResults
 }
 
 class MoveTokenActor @Inject()(gameStateDao: GameStateDao,
