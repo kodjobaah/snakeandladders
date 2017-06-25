@@ -45,7 +45,8 @@ class MoveTokenActorSpec
         .returning(Future(Updated(gs._id.stringify)))
 
       val moveTokenActor = system.actorOf(
-        Props(classOf[MoveTokenActor], gameStateDao, movePlayerService))
+        Props(classOf[MoveTokenActor], gameStateDao, movePlayerService)
+      )
 
       implicit val timeout: Timeout = 5.seconds
 
@@ -76,7 +77,8 @@ class MoveTokenActorSpec
       }
 
       val moveTokenActor = system.actorOf(
-        Props(classOf[MoveTokenActor], gameStateDao, movePlayerService))
+        Props(classOf[MoveTokenActor], gameStateDao, movePlayerService)
+      )
 
       implicit val timeout: Timeout = 5.seconds
 
@@ -106,7 +108,8 @@ class MoveTokenActorSpec
       }
 
       val moveTokenActor = system.actorOf(
-        Props(classOf[MoveTokenActor], gameStateDao, movePlayerService))
+        Props(classOf[MoveTokenActor], gameStateDao, movePlayerService)
+      )
 
       implicit val timeout: Timeout = 5.seconds
 
@@ -122,7 +125,8 @@ class MoveTokenActorSpec
       (gameStateDao.find _).expects(*).returning(Future(None))
 
       val moveTokenActor = system.actorOf(
-        Props(classOf[MoveTokenActor], gameStateDao, movePlayerService))
+        Props(classOf[MoveTokenActor], gameStateDao, movePlayerService)
+      )
       implicit val timeout: Timeout = 5.seconds
 
       moveTokenActor ! MoveToken("not eixit", "not exist")

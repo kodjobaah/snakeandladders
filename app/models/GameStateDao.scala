@@ -7,13 +7,13 @@ import reactivemongo.play.json.collection.JSONCollection
 import play.modules.reactivemongo.json._
 import reactivemongo.api.commands.WriteResult
 import reactivemongo.bson.BSONObjectID._
-import reactivemongo.bson.{ BSONDocument, BSONObjectID }
-import service.{ Dice, PlaysFirstService }
+import reactivemongo.bson.{BSONDocument, BSONObjectID}
+import service.{Dice, PlaysFirstService}
 
 import scala.concurrent.Future
-import scala.util.{ Failure, Success }
+import scala.util.{Failure, Success}
 
-class GameStateDao @Inject() (val reactiveMongoApi: ReactiveMongoApi) {
+class GameStateDao @Inject()(val reactiveMongoApi: ReactiveMongoApi) {
 
   import scala.concurrent.ExecutionContext.Implicits.global
   def gameStates =
@@ -22,8 +22,8 @@ class GameStateDao @Inject() (val reactiveMongoApi: ReactiveMongoApi) {
   import JsonFormats._
 
   def createGame(
-    playsFirstService: PlaysFirstService,
-    computer: Int
+      playsFirstService: PlaysFirstService,
+      computer: Int
   ): Future[String] = {
 
     def findPlayer(p1: (Player, Int), p2: (Player, Int)): Player = {

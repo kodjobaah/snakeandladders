@@ -42,7 +42,8 @@ class GameStateActorSpec
       (gameState.findActive _).expects().returning(Future(Option(gs)))
 
       val gameStartActor = system.actorOf(
-        Props(classOf[GameStateActor], gameState, playsFirstService))
+        Props(classOf[GameStateActor], gameState, playsFirstService)
+      )
       implicit val timeout: Timeout = 5.seconds
       gameStartActor ! Start(0)
       expectMsg(GameExist(gs._id.stringify))
@@ -67,7 +68,8 @@ class GameStateActorSpec
         .returning(Future("myId"))
 
       val gameStartActor = system.actorOf(
-        Props(classOf[GameStateActor], gameState, playsFirstService))
+        Props(classOf[GameStateActor], gameState, playsFirstService)
+      )
       implicit val timeout: Timeout = 5.seconds
       gameStartActor ! Start(0)
       expectMsg(NewGame("myId"))
