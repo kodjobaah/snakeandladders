@@ -56,10 +56,13 @@ To move token make a post request to the following endpoint
 ##Running Tests
 
 ####Unit Test
-`test: test`
+`test:test`
 
 ####Integration Test
-`it: test`
+`it:test`
 
 ####Gatling Test
+This demonstrates how to play against the computer  
+NOTE: These test expects the collection to be initially empty  
 `gatling:test`
+
