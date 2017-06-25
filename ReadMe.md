@@ -1,6 +1,6 @@
-#Snakes And Ladders
+#Snakes And Ladders#
 
-####Starting game
+####Starting game####
 
 You must create a post request to the following endpoint  
 `POST localhost:9000/startGame/${start}`
@@ -13,7 +13,7 @@ You must create a post request to the following endpoint
 if **${start} > 0** This starts game for a user against a computer: user id = "player1"  
 if **${start} < 1** This starts game for two users: "player1" and "player2"
 
-####Roll Dice
+####Roll Dice####
 
 To roll dice you must make a post request to the following endpoint  
 
@@ -26,11 +26,12 @@ To roll dice you must make a post request to the following endpoint
  
 
 
-######Parameters   
+######Parameters######   
 `${gameId}` The game id  
 `${playerId} `The player id
 
-####Move Token
+
+####Move Token####
 To move token make a post request to the following endpoint
 
 `POST localhost:9000/moveToken/${gameId}/${playerId}`
@@ -47,21 +48,21 @@ To move token make a post request to the following endpoint
 
 
 
-######Parameters   
+######Parameters######   
 `${gameId}` The game id  
 `${playerId}` The player id
 
 
 
-##Running Tests
+##Running Tests##
 
-####Unit Test
+####Unit Test####
 `test:test`
 
-####Integration Test
+####Integration Test####
 `it:test`
 
-####Gatling Test
+####Gatling Test####
 This demonstrates how to play against the computer  
 NOTE: These test expects the collection to be initially empty  
 `gatling:test`
